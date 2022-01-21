@@ -1,0 +1,13 @@
+homepage: "https://www.raptorservices.com"
+documentation: "https://github.com/RaptorServices/raptor-gtm-eventtracking"
+versions:
+  # Latest version
+  - sha: 84e1f586632b3468a33fd4099c151a913783a466
+    changeNotes: Initial commit
+  
+  # Older versions
+
+
+
+
+
