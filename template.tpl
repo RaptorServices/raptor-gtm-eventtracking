@@ -23,7 +23,7 @@ ___INFO___
     "displayName": "RaptorServices",
     "thumbnail": "data:image/jpeg;base64,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"
   },
-  "description": "This template can be used for implementing Raptor tracking on any website. It can be used for all types of implementations, either if it\u0027s an enhanced ecommerce setup, or a custom implementation.",
+  "description": "This template helps implementing Raptor tracking on any website. It can be used for all types of implementations, either if it\u0027s an enhanced ecommerce setup, or a custom implementation.",
   "containerContexts": [
     "WEB"
   ]
@@ -36,16 +36,16 @@ ___TEMPLATE_PARAMETERS___
   {
     "type": "SELECT",
     "name": "eventType",
-    "displayName": "Event Type",
+    "displayName": "Event type",
     "macrosInSelect": false,
     "selectItems": [
       {
         "value": "productDetail",
-        "displayValue": "Product Detail (visit)"
+        "displayValue": "Product detail (visit)"
       },
       {
         "value": "basketEvent",
-        "displayValue": "Add or Remove from Basket (basket)"
+        "displayValue": "Add or remove from Basket (basket)"
       },
       {
         "value": "purchase",
@@ -53,11 +53,11 @@ ___TEMPLATE_PARAMETERS___
       },
       {
         "value": "raptorModuleClick",
-        "displayValue": "Raptor Module Click (itemClick)"
+        "displayValue": "Raptor module click (itemClick)"
       },
       {
         "value": "custom",
-        "displayValue": "Custom Event"
+        "displayValue": "Custom event"
       }
     ],
     "simpleValueType": true,
@@ -88,7 +88,7 @@ ___TEMPLATE_PARAMETERS___
   {
     "type": "SELECT",
     "name": "raptorModule",
-    "displayName": "Raptor Module Clicked",
+    "displayName": "Raptor module clicked",
     "macrosInSelect": true,
     "selectItems": [],
     "simpleValueType": true,
@@ -110,13 +110,13 @@ ___TEMPLATE_PARAMETERS___
   {
     "type": "GROUP",
     "name": "subtotalParametersGroup",
-    "displayName": "Custom Parameter Mapping",
+    "displayName": "Custom parameter mapping",
     "groupStyle": "ZIPPY_OPEN",
     "subParams": [
       {
         "type": "TEXT",
         "name": "priceParameterNumber",
-        "displayName": "Item Price Parameter Number (default 12)",
+        "displayName": "Item price parameter number (default 12)",
         "simpleValueType": true,
         "defaultValue": 12,
         "help": "Position of the item price in the tracking template. Only change this if your tracking template differs from the default",
@@ -139,7 +139,7 @@ ___TEMPLATE_PARAMETERS___
       {
         "type": "TEXT",
         "name": "quantityParameterNumber",
-        "displayName": "Quantity Parameter Number",
+        "displayName": "Quantity parameter number",
         "simpleValueType": true,
         "enablingConditions": [
           {
@@ -153,7 +153,7 @@ ___TEMPLATE_PARAMETERS___
       {
         "type": "TEXT",
         "name": "subTotalParameterNumber",
-        "displayName": "Subtotal Parameter Number (default: 5)",
+        "displayName": "Subtotal parameter number (default: 5)",
         "simpleValueType": true,
         "enablingConditions": [
           {
@@ -241,27 +241,6 @@ ___TEMPLATE_PARAMETERS___
     "name": "parameterMapping",
     "displayName": "Parameter Mapping",
     "simpleTableColumns": [
-       {
-        "defaultValue": "name",
-        "displayName": "Parameter Source",
-        "name": "parameterSource",
-        "type": "SELECT",
-        "selectItems": [
-          {
-            "value": "name",
-            "displayValue": "Datalayer Product Property Name"
-          },
-          {
-            "value": "variable",
-            "displayValue": "Datalayer Variable"
-          }
-        ],
-        "valueValidators": [
-          {
-            "type": "NON_EMPTY"
-          }
-        ]
-      },
       {
         "defaultValue": "",
         "displayName": "Parameter",
@@ -400,23 +379,43 @@ ___TEMPLATE_PARAMETERS___
           }
         ],
         "isUnique": false
+      },
+      {
+        "defaultValue": "isName",
+        "displayName": "Parameter Source",
+        "name": "parameterSource",
+        "type": "SELECT",
+        "selectItems": [
+          {
+            "value": "name",
+            "displayValue": "Datalayer Product Property Name"
+          },
+          {
+            "value": "variable",
+            "displayValue": "Datalayer Variable"
+          }
+        ],
+        "valueValidators": [
+          {
+            "type": "NON_EMPTY"
+          }
+        ]
       }
-     
     ],
     "alwaysInSummary": true,
-    "newRowButtonText": "Add Parameter",
+    "newRowButtonText": "Add parameter",
     "help": "Map values to the Raptor tracking parameters by selecting values from the datalayer, or point to properties on the product object.\u003cbr/\u003e\nExample:\u003cbr/\u003e\nIf you are tracking the product detail event:\n\u003col\u003e\n\u003cli\u003eSelect the product detail object in the setting above\u003c/li\u003e\n\u003cli\u003eGo to \"implementing tracking\", in the Raptor controlpanel, and find the order of parameters in the tracking event\u003c/li\u003e\n\u003cli\u003eClick \"Add Parameter\"\u003c/li\u003e\n\u003cli\u003eIf for instance product id is positioned at parameter 2, select \"p2\" in the dropdown\u003c/li\u003e\n\u003cli\u003eIf the property of the product id is named \"id\" in the datalayer, write \"id\" in the \"parameter property name\u003c/li\u003e\n\u003cli\u003eIn \"parameter source\", Select Datalayer property name\u003c/li\u003e\n\u003c/ol\u003e\n\nNB: Parameter 1 is automatically filled out with the event type (visit, buy, basket, etc), and should not be mapped"
   },
   {
     "type": "GROUP",
     "name": "defaultSettingsGroup",
-    "displayName": "Default Settings",
+    "displayName": "Default settings",
     "groupStyle": "ZIPPY_CLOSED",
     "subParams": [
       {
         "type": "TEXT",
         "name": "eventTypeParameter",
-        "displayName": "Eventtype Parameter Number (default 1)",
+        "displayName": "Eventtype parameter number (default 1)",
         "simpleValueType": true,
         "defaultValue": 1,
         "help": "Position of the event type in the tracking template. Only change this if your tracking template differs from the default",
