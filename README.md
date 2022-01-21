@@ -80,13 +80,22 @@ This is where you map values from the datalayer into the Raptor tracking paramet
 >You will find the tracking parameters in the raptor controlpanel: https://www.controlpanel.raptorsmartadvisor.com (Select Integrations -> Implementing tracking)
 
 
+**Parameter Source**
+
+* Datalayer product property: 
+  * If you have selected a product detail object/array above, you can just specify the name of the property to track. 
+* Datalayer variable
+  * Map a parameter to any value coming from the datalayer using a varible
+
+**Parameter**
 * Select the parameter to map, for instance "p2"
-* Check with the tracking template in the controlpanel, which parameter should go into p2
-* Type the name of the property on the product detail object. In the example above the name would be "id", for mapping the product id
-* In parameter source, Select "Datalayer Variable" 
+
+**Parameter property name/value**
+* *When source is "Datalayer Product property":* Write the name of the property to track (for instance write "id" using the example above, for tracking the product id)
+* *When source is "Datalayer variable"*: Select the datalayer variable to track
+
 * Repeat for each parameter that you want to track. 
 
-You can map any value to a tracking parameter using variables, and choosing parameter source "Datalayer variable"
 
 ### Raptor Module Clicked
 ---
