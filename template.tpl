@@ -597,7 +597,7 @@ function calculateSubtotal(product, data, tracking){
         
         if(priceParameter)
         {
-           var isName =priceParameter.parameterKind == "name";
+           var isName =priceParameter.parameterSource == "name";
                  
            if(isName && product) price = product[priceParameter.parameterName];
         }
@@ -621,7 +621,7 @@ function calculateSubtotal(product, data, tracking){
         
         if(quantityParameter)
         {
-           var isQName =quantityParameter.parameterKind == "name";
+           var isQName =quantityParameter.parameterSource == "name";
            if(isQName && product) quantity = product[quantityParameter.parameterName];
         }
       
@@ -646,7 +646,7 @@ function setMappedParameters(data, trackingObject, product)
     
     if(foundParameter)
     {
-       var isVariable =foundParameter.parameterKind == "variable";
+       var isVariable =foundParameter.parameterSource == "variable";
       var dataParameter = foundParameter.parameterValue;
       
       if(isVariable) trackingObject["p"+i] = dataParameter;
@@ -670,6 +670,7 @@ function tryGetParameterFromMapping(parameterNumber)
  
   
   var params =data.parameterMapping;
+  log(params);
   if(!params) return null;
    
   var foundParam = null;
@@ -1009,10 +1010,10 @@ scenarios:
 - name: Should track parameter values from parameters in map
   code: "const mockData = {\n  customerId :'1234',\n  categoryPath: 'myCategoryPath',\n\
     \  eventType:'productDetail',\n  eventTypeParameter: 1,\n    parameterMapping:\
-    \ [\n    {\"parameterName\":\"p2\",\"parameterValue\":\"1234\", \"parameterKind\"\
+    \ [\n    {\"parameterName\":\"p2\",\"parameterValue\":\"1234\", \"parameterSource\"\
     :\"variable\"},\n    {\"parameterName\":\"p3\",\"parameterValue\":\"Iphone\",\"\
-    parameterKind\":\"variable\"},\n    {\"parameterName\":\"p4\",\"parameterValue\"\
-    :\"Apple/Phones\",\"parameterKind\":\"variable\"}\n  ],\n  productObject:{}\n\
+    parameterSource\":\"variable\"},\n    {\"parameterName\":\"p4\",\"parameterValue\"\
+    :\"Apple/Phones\",\"parameterSource\":\"variable\"}\n  ],\n  productObject:{}\n\
     \    \n};\n\n\n// Call runCode to run the template's code.\nrunCode(mockData);\n\
     \nassertApi('callInWindow').wasCalled();\nvar raptorQueue = copyFromWindow('raptor.q');\n\
     assertThat(raptorQueue).isDefined();\nassertThat(raptorQueue.length).isEqualTo(2);\n\
@@ -1044,8 +1045,8 @@ scenarios:
       eventType:'basketEvent',
       eventTypeParameter: 1,
        parameterMapping: [
-        {"parameterName":"p10","parameterValue":"12345,23456", "parameterKind":"variable"},//basket content
-        {"parameterName":"p11","parameterValue":"3333","parameterKind":"variable"},//basket Id
+        {"parameterName":"p10","parameterValue":"12345,23456", "parameterSource":"variable"},//basket content
+        {"parameterName":"p11","parameterValue":"3333","parameterSource":"variable"},//basket Id
        ],
     };
 
@@ -1113,11 +1114,11 @@ scenarios:
     \      name:'Apple Macbook Pro',\n      price:'12995',\n      quantity:1\n   \
     \ },\n    {\n      id:'2345',\n      name:'Apple Iphone',\n      price:1000,\n\
     \      quantity:2\n    }\n  ],\n   parameterMapping: [\n    {\"parameterName\"\
-    :\"p2\",\"parameterValue\":\"id\", \"parameterKind\":\"name\"},\n    {\"parameterName\"\
-    :\"p3\",\"parameterValue\":\"name\", \"parameterKind\":\"name\"},\n     {\"parameterName\"\
-    :\"p12\",\"parameterValue\":\"price\", \"parameterKind\":\"name\"},\n     {\"\
-    parameterName\":\"p13\",\"parameterValue\":\"quantity\", \"parameterKind\":\"\
-    name\"},\n     {\"parameterName\":\"p6\",\"parameterValue\":\"DKK\", \"parameterKind\"\
+    :\"p2\",\"parameterValue\":\"id\", \"parameterSource\":\"name\"},\n    {\"parameterName\"\
+    :\"p3\",\"parameterValue\":\"name\", \"parameterSource\":\"name\"},\n     {\"\
+    parameterName\":\"p12\",\"parameterValue\":\"price\", \"parameterSource\":\"name\"\
+    },\n     {\"parameterName\":\"p13\",\"parameterValue\":\"quantity\", \"parameterSource\"\
+    :\"name\"},\n     {\"parameterName\":\"p6\",\"parameterValue\":\"DKK\", \"parameterSource\"\
     :\"variable\"},\n     \n   ],\n};\n\n\n// Call runCode to run the template's code.\n\
     runCode(mockData);\n\nassertApi('callInWindow').wasCalled();\nvar raptorQueue\
     \ = copyFromWindow('raptor.q');\nassertThat(raptorQueue).isNotNull();\nassertThat(raptorQueue.length).isEqualTo(3);\n\
@@ -1137,8 +1138,8 @@ scenarios:
       eventType:'raptorModuleClick',
       eventTypeParameter: 1,
        parameterMapping: [
-        {"parameterName":"p2","parameterValue":"12345", "parameterKind":"variable"},
-        {"parameterName":"p3","parameterValue":"Apple Macbook Pro","parameterKind":"variable"},
+        {"parameterName":"p2","parameterValue":"12345", "parameterSource":"variable"},
+        {"parameterName":"p3","parameterValue":"Apple Macbook Pro","parameterSource":"variable"},
         ],
     };
 
@@ -1168,7 +1169,7 @@ scenarios:
       eventTypeParameter: 1,
       eventName: 'myCustomEvent',
       parameterMapping: [
-        {"parameterName":"p2","parameterValue":"myValue", "parameterKind":"variable"},
+        {"parameterName":"p2","parameterValue":"myValue", "parameterSource":"variable"},
       ],
     };
 
