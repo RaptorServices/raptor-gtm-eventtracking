@@ -383,6 +383,46 @@ ___TEMPLATE_PARAMETERS___
           {
             "value": "p5",
             "displayValue": "p5"
+          },
+          {
+            "value": "p31",
+            "displayValue": "p31"
+          },
+          {
+            "value": "p32",
+            "displayValue": "p32"
+          },
+          {
+            "value": "p33",
+            "displayValue": "p33"
+          },
+          {
+            "value": "p34",
+            "displayValue": "p34"
+          },
+          {
+            "value": "p35",
+            "displayValue": "p35"
+          },
+          {
+            "value": "p36",
+            "displayValue": "p36"
+          },
+          {
+            "value": "p37",
+            "displayValue": "p37"
+          },
+          {
+            "value": "p38",
+            "displayValue": "p38"
+          },
+          {
+            "value": "p39",
+            "displayValue": "p39"
+          },
+          {
+            "value": "p40",
+            "displayValue": "p40"
           }
         ],
         "isUnique": true
@@ -640,7 +680,7 @@ function calculateSubtotal(product, data, tracking){
 function setMappedParameters(data, trackingObject, product)
 {
   
-  for(var i=1;i<31;i++)
+  for(var i=1;i<41;i++)
   {
     var foundParameter = tryGetParameterFromMapping(i);
     
@@ -670,7 +710,7 @@ function tryGetParameterFromMapping(parameterNumber)
  
   
   var params =data.parameterMapping;
-  log(params);
+  
   if(!params) return null;
    
   var foundParam = null;
@@ -1013,14 +1053,15 @@ scenarios:
     \ [\n    {\"parameterName\":\"p2\",\"parameterValue\":\"1234\", \"parameterSource\"\
     :\"variable\"},\n    {\"parameterName\":\"p3\",\"parameterValue\":\"Iphone\",\"\
     parameterSource\":\"variable\"},\n    {\"parameterName\":\"p4\",\"parameterValue\"\
-    :\"Apple/Phones\",\"parameterSource\":\"variable\"}\n  ],\n  productObject:{}\n\
-    \    \n};\n\n\n// Call runCode to run the template's code.\nrunCode(mockData);\n\
-    \nassertApi('callInWindow').wasCalled();\nvar raptorQueue = copyFromWindow('raptor.q');\n\
-    assertThat(raptorQueue).isDefined();\nassertThat(raptorQueue.length).isEqualTo(2);\n\
+    :\"Apple/Phones\",\"parameterSource\":\"variable\"},\n    {\"parameterName\":\"\
+    p40\",\"parameterValue\":\"Parameter40\",\"parameterSource\":\"variable\"}\n \
+    \ ],\n  productObject:{}\n    \n};\n\n\n// Call runCode to run the template's\
+    \ code.\nrunCode(mockData);\n\nassertApi('callInWindow').wasCalled();\nvar raptorQueue\
+    \ = copyFromWindow('raptor.q');\nassertThat(raptorQueue).isDefined();\nassertThat(raptorQueue.length).isEqualTo(2);\n\
     \nvar trackingObj = raptorQueue[1].params;\nlog(trackingObj);\n\nassertThat(trackingObj.p1).isEqualTo('visit');\n\
     assertThat(trackingObj.p2).isEqualTo('1234');\nassertThat(trackingObj.p3).isEqualTo('Iphone');\n\
-    assertThat(trackingObj.p4).isEqualTo('Apple/Phones');\n\n\n// Verify that the\
-    \ tag finished successfully.\nassertApi('gtmOnSuccess').wasCalled();\n"
+    assertThat(trackingObj.p4).isEqualTo('Apple/Phones');\nassertThat(trackingObj.p40).isEqualTo('Parameter40');\n\
+    \n// Verify that the tag finished successfully.\nassertApi('gtmOnSuccess').wasCalled();\n"
 - name: Should track parameter values from mapped property names on product
   code: "const mockData = {\n  customerId :'1234',\n  categoryPath: 'myCategoryPath',\n\
     \  eventType:'productDetail',\n  eventTypeParameter: 1,\n    parameterMapping:\
