@@ -2,10 +2,12 @@ homepage: "https://www.raptorservices.com"
 documentation: "https://github.com/RaptorServices/raptor-gtm-eventtracking"
 versions:
   # Latest version
-  - sha: 3602d49a093d699d3587727d6e3bf8159bf23350
-    changeNotes: Version 1.1 - Fixed renamed property bug
+  - sha: 3754461f65ef13d81891cd0195cf461766ec9fe1
+    changeNotes: Version 1.2 - Expanded number of parameters to 40
 
   # Previous versions
+  - sha: 3602d49a093d699d3587727d6e3bf8159bf23350
+    changeNotes: Version 1.1 - Fixed renamed property bug
   - sha: 90707f54d946b5c239e9530f8e90f61cc610759a
     changeNotes: Version 1.0
 
