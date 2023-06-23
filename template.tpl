@@ -249,11 +249,11 @@ ___TEMPLATE_PARAMETERS___
         "selectItems": [
           {
             "value": "name",
-            "displayValue": "Object Property name (for instance: 'Price')"
+           "displayValue": "Object Property name (for instance: 'Price')"
           },
           {
             "value": "variable",
-            "displayValue": "Datalayer Variable/Text value"
+             "displayValue": "Datalayer Variable or Text value"
           }
         ],
         "valueValidators": [
@@ -423,7 +423,7 @@ ___TEMPLATE_PARAMETERS___
           {
             "value": "p40",
             "displayValue": "p40"
-          }
+          },
            {
             "value": "p100",
             "displayValue": "p100"
@@ -508,7 +508,6 @@ ___TEMPLATE_PARAMETERS___
             "value": "p120",
             "displayValue": "p120"
           }
-          
         ],
         "isUnique": true
       },
@@ -1328,5 +1327,4 @@ setup: |-
 ___NOTES___
 
 Created on 5.11.2020 09.54.06
-
 
