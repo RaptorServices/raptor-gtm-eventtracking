@@ -243,17 +243,17 @@ ___TEMPLATE_PARAMETERS___
     "simpleTableColumns": [
       {
         "defaultValue": "name",
-        "displayName": "Parameter Source",
+        "displayName": "Parameter Type",
         "name": "parameterSource",
         "type": "SELECT",
         "selectItems": [
           {
             "value": "name",
-            "displayValue": "Datalayer Product Property Name"
+            "displayValue": "Object Property name (for instance: 'Price')"
           },
           {
             "value": "variable",
-            "displayValue": "Datalayer Variable"
+            "displayValue": "Datalayer Variable/Text value"
           }
         ],
         "valueValidators": [
