@@ -249,11 +249,11 @@ ___TEMPLATE_PARAMETERS___
         "selectItems": [
           {
             "value": "name",
-           "displayValue": "Object Property name (for instance: 'Price')"
+            "displayValue": "Object Property name (for instance: \u0027Price\u0027)"
           },
           {
             "value": "variable",
-             "displayValue": "Datalayer Variable or Text value"
+            "displayValue": "Datalayer Variable or Text value"
           }
         ],
         "valueValidators": [
@@ -424,87 +424,87 @@ ___TEMPLATE_PARAMETERS___
             "value": "p40",
             "displayValue": "p40"
           },
-           {
+          {
             "value": "p100",
             "displayValue": "p100"
           },
-           {
+          {
             "value": "p101",
             "displayValue": "p101"
           },
-           {
+          {
             "value": "p102",
             "displayValue": "p102"
           },
-           {
+          {
             "value": "p103",
             "displayValue": "p103"
           },
-           {
+          {
             "value": "p104",
             "displayValue": "p104"
           },
-           {
+          {
             "value": "p105",
             "displayValue": "p105"
           },
-           {
+          {
             "value": "p106",
             "displayValue": "p106"
           },
-           {
+          {
             "value": "p107",
             "displayValue": "p107"
           },
-           {
+          {
             "value": "p108",
             "displayValue": "p108"
           },
-           {
+          {
             "value": "p109",
             "displayValue": "p109"
           },
-           {
+          {
             "value": "p110",
             "displayValue": "p110"
           },
-           {
+          {
             "value": "p111",
             "displayValue": "p111"
           },
-           {
+          {
             "value": "p112",
             "displayValue": "p112"
           },
-           {
+          {
             "value": "p113",
             "displayValue": "p113"
           },
-           {
+          {
             "value": "p114",
             "displayValue": "p114"
           },
-           {
+          {
             "value": "p115",
             "displayValue": "p115"
           },
-           {
+          {
             "value": "p116",
             "displayValue": "p116"
           },
-           {
+          {
             "value": "p117",
             "displayValue": "p117"
           },
-           {
+          {
             "value": "p118",
             "displayValue": "p118"
           },
-           {
+          {
             "value": "p119",
             "displayValue": "p119"
           },
-           {
+          {
             "value": "p120",
             "displayValue": "p120"
           }
@@ -568,254 +568,226 @@ const log = require('logToConsole');
 
 
 ensureRaptor();
- 
-switch(data.eventType){
+
+switch (data.eventType) {
   case 'productDetail':
     productDetailEvent();
     break;
-  
+
   case 'basketEvent':
     basketEvent();
     break;
-    
+
   case 'raptorModuleClick':
     productClickEvent();
     break;
-  
+
   case 'purchase':
     purchaseEvent();
     break;
-  
+
   default:
-     defaultEvent();
-  
+    defaultEvent();
+
 }
 
 data.gtmOnSuccess();
 
-  
-function productDetailEvent()
-{
-  
+
+function productDetailEvent() {
+
   var product = data.productObject;
-  
-  if(!product) return fail("No product found.");
-   
-  var trackingObject ={};
-  
-  setMappedParameters(data,trackingObject, product);
-  setEventType('visit',data.eventTypeParameter, trackingObject);
-  callInWindow('raptor.push','trackEvent',trackingObject);
-    
+
+  if (!product) return fail("No product found.");
+
+  var trackingObject = {};
+
+  setMappedParameters(data, trackingObject, product);
+  setEventType('visit', data.eventTypeParameter, trackingObject);
+  callInWindow('raptor.push', 'trackEvent', trackingObject);
+
 }
 
 
-function defaultEvent()
-{
-  
+function defaultEvent() {
+
   var product = data.productObject;
-  
-  var trackingObject ={};
-  
-  setMappedParameters(data,trackingObject, product);
-  setEventType(data.eventName,data.eventTypeParameter, trackingObject);
-  callInWindow('raptor.push','trackEvent',trackingObject);
-    
+
+  var trackingObject = {};
+
+  setMappedParameters(data, trackingObject, product);
+  setEventType(data.eventName, data.eventTypeParameter, trackingObject);
+  callInWindow('raptor.push', 'trackEvent', trackingObject);
+
 }
 
 
-  
-function basketEvent()  {
-  
-  if(data.raptorModule)
-  {
 
-    
-    var product =  data.productObject;
-    if(product)
-    {
-        var trackingObject = {};
-        
-        setMappedParameters(data,trackingObject, product);
-        setEventType('itemclick',data.eventTypeParameter, trackingObject);
-        callInWindow('raptor.push','trackEvent',  trackingObject ,{moduleName:data.raptorModule});
+function basketEvent() {
+
+  if (data.raptorModule) {
+
+
+    var product = data.productObject;
+    if (product) {
+      var trackingObject = {};
+
+      setMappedParameters(data, trackingObject, product);
+      setEventType('itemclick', data.eventTypeParameter, trackingObject);
+      callInWindow('raptor.push', 'trackEvent', trackingObject, { moduleName: data.raptorModule });
     }
-   }
-  
-    var basketTracking = {};
-    setMappedParameters(data,basketTracking);
-    setEventType('basket',data.eventTypeParameter, basketTracking);
-  
-    callInWindow('raptor.push','trackEvent', basketTracking); 
+  }
+
+  var basketTracking = {};
+  setMappedParameters(data, basketTracking);
+  setEventType('basket', data.eventTypeParameter, basketTracking);
+
+  callInWindow('raptor.push', 'trackEvent', basketTracking);
 
 }
 
-function productClickEvent(){
-  
-  
-    var product =  data.productObject;
-      
-    var tracking = {};
-    setMappedParameters(data,tracking, product);
-    setEventType('itemclick',data.eventTypeParameter, tracking);
-      
-    callInWindow('raptor.push','trackEvent', tracking ,{moduleName:data.raptorModule});
- }
+function productClickEvent() {
 
 
-function purchaseEvent(){
- 
+  var product = data.productObject;
+
+  var tracking = {};
+  setMappedParameters(data, tracking, product);
+  setEventType('itemclick', data.eventTypeParameter, tracking);
+
+  callInWindow('raptor.push', 'trackEvent', tracking, { moduleName: data.raptorModule });
+}
+
+
+function purchaseEvent() {
+
   var products = data.productArray;
-  
-  if(!products) return fail("No products array could be found");
-  
-  
-  products.forEach(function(product){
-    
+
+  if (!products) return fail("No products array could be found");
+
+
+  products.forEach(function (product) {
+
     var buyTracking = {};
-    
-    setMappedParameters(data,buyTracking,product);
-    
-    setEventType('buy',data.eventTypeParameter, buyTracking);
-    
-    if(data.calculateSubtotal) calculateSubtotal(product,data,buyTracking);
-    
-    callInWindow('raptor.push','trackEvent',buyTracking);
+
+    setMappedParameters(data, buyTracking, product);
+
+    setEventType('buy', data.eventTypeParameter, buyTracking);
+
+    if (data.calculateSubtotal) calculateSubtotal(product, data, buyTracking);
+
+    callInWindow('raptor.push', 'trackEvent', buyTracking);
 
   });
-  
+
 }
 
-function ensureRaptor()
-{
+function ensureRaptor() {
   var q = copyFromWindow('raptor.q');
-  if(!q) q = copyFromWindow('raptor.eventQueue');
-  
-  if(!q){
+  if (!q) q = copyFromWindow('raptor.eventQueue');
+
+  if (!q) {
 
     var raptor = {
       q: [],
-      push: function(event,params,options){
-        callInWindow('raptor.q.push',{event:event,params:params, options:options});
-    	}
-    }; 
-    setInWindow('raptor',raptor,true);
-    callInWindow('raptor.push','trackevent',{p1:"pageview"});
+      push: function (event, params, options) {
+        callInWindow('raptor.q.push', { event: event, params: params, options: options });
+      }
+    };
+    setInWindow('raptor', raptor, true);
+    callInWindow('raptor.push', 'trackevent', { p1: "pageview" });
   }
-  
+
 }
 
 
-function setEventType(eventType, eventTypeParameter, trackingObject)
-{
-    trackingObject["p"+ eventTypeParameter] = eventType;
+function setEventType(eventType, eventTypeParameter, trackingObject) {
+  trackingObject["p" + eventTypeParameter] = eventType;
 }
 
-function calculateSubtotal(product, data, tracking){
+function calculateSubtotal(product, data, tracking) {
+  var price = 0;
+  var quantity = 1;
   
-       var price = product.price;
+  var priceParameter = tryGetParameterFromMapping(data.priceParameterNumber);
+  if (priceParameter) {
+    var isName = priceParameter.parameterSource == "name";
+
+    if (isName && product) price = product[priceParameter.parameterValue];
+  }
+
+  if (!price) price = 0;
+
+  if (typeof (price) == 'string') {
+    var priceString = price.replace(',', '.');
+    price = makeNumber(priceString);
+  }
+
+  var quantityParameter = tryGetParameterFromMapping(data.quantityParameterNumber);
   
-      if(!price)
-      {
-        var priceParameter = tryGetParameterFromMapping(data.priceParameterNumber);
-        
-        if(priceParameter)
-        {
-           var isName =priceParameter.parameterSource == "name";
-                 
-           if(isName && product) price = product[priceParameter.parameterName];
-        }
-      }
-      
-            
-      if(!price) price = 0;
-      
-      if(typeof(price) == 'string')
-      {
-          var priceString = price.replace(',','.');    
-          price = makeNumber(priceString);
-      }
-      
-           
-      var quantity = product.quantity;
-      if(!quantity)
-      {
-        
-         var quantityParameter = tryGetParameterFromMapping(data.priceParameterNumber);
-        
-        if(quantityParameter)
-        {
-           var isQName =quantityParameter.parameterSource == "name";
-           if(isQName && product) quantity = product[quantityParameter.parameterName];
-        }
-      
-      }
-       
-      if(!quantity) quantity = 1;
-      quantity = makeNumber(quantity);
-  
-      var subTotal = quantity * price;
-      
-      if(data.priceParameterNumber) tracking['p'+data.priceParameterNumber] = makeString(price);
-      if(data.quantityParameterNumber) tracking['p'+data.quantityParameterNumber] = makeString(quantity);
-      if(data.subTotalParameterNumber) tracking['p'+data.subTotalParameterNumber] = makeString(subTotal);
+  if (quantityParameter) {
+    var isQName = quantityParameter.parameterSource == "name";
+    if (isQName && product) quantity = product[quantityParameter.parameterValue];
+  }
+
+  if (!quantity) quantity = 1;
+  quantity = makeNumber(quantity);
+
+  var subTotal = quantity * price;
+
+  if (data.priceParameterNumber) tracking['p' + data.priceParameterNumber] = makeString(price);
+  if (data.quantityParameterNumber) tracking['p' + data.quantityParameterNumber] = makeString(quantity);
+  if (data.subTotalParameterNumber) tracking['p' + data.subTotalParameterNumber] = makeString(subTotal);
 }
 
-function setMappedParameters(data, trackingObject, product)
-{
-  
-  for(var i=1;i<41;i++)
-  {
+function setMappedParameters(data, trackingObject, product) {
+
+  for (var i = 1; i < 41; i++) {
     var foundParameter = tryGetParameterFromMapping(i);
-    
-    if(foundParameter)
-    {
-       var isVariable =foundParameter.parameterSource == "variable";
+
+    if (foundParameter) {
+      var isVariable = foundParameter.parameterSource == "variable";
       var dataParameter = foundParameter.parameterValue;
-      
-      if(isVariable) trackingObject["p"+i] = dataParameter;
-      
-      else
-      {
-        if(product) {
-          var value =product[dataParameter];
-          trackingObject["p"+i] = value;
+
+      if (isVariable) trackingObject["p" + i] = dataParameter;
+
+      else {
+        if (product) {
+          var value = product[dataParameter];
+          trackingObject["p" + i] = value;
         }
       }
     }
-    
-    
+
+
   }
 }
 
 
-function tryGetParameterFromMapping(parameterNumber)
-{
- 
-  
-  var params =data.parameterMapping;
-  
-  if(!params) return null;
-   
+function tryGetParameterFromMapping(parameterNumber) {
+
+
+  var params = data.parameterMapping;
+
+  if (!params) return null;
+
   var foundParam = null;
-  for(var i=0;i<params.length;i++)
-  {
-    
+  for (var i = 0; i < params.length; i++) {
+
     var item = params[i];
-    
-    if(item.parameterName == 'p' + parameterNumber) 
-    {
+
+    if (item.parameterName == 'p' + parameterNumber) {
       foundParam = item;
       break;
     }
-      
+
   }
-  
+
   return foundParam;
-    
+
 }
 
-function  fail(msg) {
+function fail(msg) {
   log(msg);
   return data.gtmOnFailure();
 }
@@ -1316,6 +1288,31 @@ scenarios:
     assertThat(event1).isDefined();
     assertThat(event1.p1).isEqualTo('myCustomEvent');
     assertThat(event1.p2).isEqualTo('myValue');
+- name: Should track purchase events with custom object names
+  code: "const mockData = {\n  customerId :'1234',\n  eventType:'purchase',\n  eventTypeParameter:\
+    \ 1,\n  priceParameterNumber: 12,\n  quantityParameterNumber: 13,\n  subTotalParameterNumber:\
+    \ 16,\n  calculateSubtotal: true,\n  productArray: [\n    {\n      id:'12345',\n\
+    \      productName:'Pantalon',\n      productUnitPrice: '29.99',\n      productDiscount:'29.99',\n\
+    \      quantity:1\n    },\n    {\n      id:'2345',\n      productName:'Tunique',\n\
+    \      productUnitPrice: 29.99,\n      productDiscount: 19.99,\n      quantity:2\n\
+    \    }\n  ],\n   parameterMapping: [\n    {\"parameterName\":\"p2\",\"parameterValue\"\
+    :\"id\", \"parameterSource\":\"name\"},\n    {\"parameterName\":\"p3\",\"parameterValue\"\
+    :\"productName\", \"parameterSource\":\"name\"},\n     {\"parameterName\":\"p12\"\
+    ,\"parameterValue\":\"productDiscount\", \"parameterSource\":\"name\"},\n    \
+    \ {\"parameterName\":\"p13\",\"parameterValue\":\"quantity\", \"parameterSource\"\
+    :\"name\"},\n     {\"parameterName\":\"p6\",\"parameterValue\":\"DKK\", \"parameterSource\"\
+    :\"variable\"},\n     \n   ],\n};\n\n\n// Call runCode to run the template's code.\n\
+    runCode(mockData);\n\nassertApi('callInWindow').wasCalled();\nvar raptorQueue\
+    \ = copyFromWindow('raptor.q');\nassertThat(raptorQueue).isNotNull();\nassertThat(raptorQueue.length).isEqualTo(3);\n\
+    \nvar event1 = raptorQueue[1].params;\n\nassertThat(event1).isDefined();\nassertThat(event1.p1).isEqualTo('buy');\n\
+    assertThat(event1.p2).isEqualTo('12345');\nassertThat(event1.p3).isEqualTo('Pantalon');\n\
+    assertThat(event1.p16).isEqualTo('29.99');\nassertThat(event1.p6).isEqualTo('DKK');\n\
+    assertThat(event1.p12).isEqualTo('29.99');\nassertThat(event1.p13).isEqualTo('1');\n\
+    \n\nvar event2 = raptorQueue[2].params;\nassertThat(event2).isDefined();\nassertThat(event2.p1).isEqualTo('buy');\n\
+    assertThat(event2.p2).isEqualTo('2345');\nassertThat(event2.p3).isEqualTo('Tunique');\n\
+    assertThat(event2.p16).isEqualTo('39.98');\nassertThat(event2.p6).isEqualTo('DKK');\n\
+    assertThat(event2.p12).isEqualTo('19.99');\nassertThat(event2.p13).isEqualTo('2');\n\
+    \n// Verify that the tag finished successfully.\nassertApi('gtmOnSuccess').wasCalled();"
 setup: |-
   const copyFromWindow = require('copyFromWindow');
   const log = require('logToConsole');
@@ -1327,4 +1324,5 @@ setup: |-
 ___NOTES___
 
 Created on 5.11.2020 09.54.06
+
 
