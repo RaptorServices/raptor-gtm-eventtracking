@@ -2,7 +2,7 @@ homepage: "https://www.raptorservices.com"
 documentation: "https://github.com/RaptorServices/raptor-gtm-eventtracking"
 versions:
   # Latest version
-  - sha: 6a623860c78a087ef6cfc8a19c2ee02a14ed2de7
+  - sha: c85071b71af4a33829336719c8106e52d9d930a3
     changeNotes: version 1.4 - Fixed bug selecting the mapped price
   
   # Previous versions
