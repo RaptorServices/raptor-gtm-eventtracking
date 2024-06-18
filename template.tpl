@@ -598,7 +598,8 @@ function productDetailEvent() {
 
   var product = data.productObject;
 
-  if (!product) return fail("No product found.");
+  if((data.parameterMapping == null || data.parameterMapping.length == 0) && product == null) return fail("You have no mappings.");
+  if (hasNameMappings(data.parameterMapping) && product == null) return fail("No product found, but you have object property mappings.");
 
   var trackingObject = {};
 
@@ -708,7 +709,7 @@ function setEventType(eventType, eventTypeParameter, trackingObject) {
 function calculateSubtotal(product, data, tracking) {
   var price = 0;
   var quantity = 1;
-  
+
   var priceParameter = tryGetParameterFromMapping(data.priceParameterNumber);
   if (priceParameter) {
     var isName = priceParameter.parameterSource == "name";
@@ -724,7 +725,7 @@ function calculateSubtotal(product, data, tracking) {
   }
 
   var quantityParameter = tryGetParameterFromMapping(data.quantityParameterNumber);
-  
+
   if (quantityParameter) {
     var isQName = quantityParameter.parameterSource == "name";
     if (isQName && product) quantity = product[quantityParameter.parameterValue];
@@ -786,6 +787,23 @@ function tryGetParameterFromMapping(parameterNumber) {
   return foundParam;
 
 }
+
+function hasNameMappings(mappings) {
+  if (mappings == null || mappings.length == 0) {
+    return false;
+  }
+
+  for (var i = 0; i < mappings.length; i++) {
+    var item = mappings[i];
+
+    if (item.parameterSource == "name") {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 
 function fail(msg) {
   log(msg);
@@ -1313,6 +1331,132 @@ scenarios:
     assertThat(event2.p16).isEqualTo('39.98');\nassertThat(event2.p6).isEqualTo('DKK');\n\
     assertThat(event2.p12).isEqualTo('19.99');\nassertThat(event2.p13).isEqualTo('2');\n\
     \n// Verify that the tag finished successfully.\nassertApi('gtmOnSuccess').wasCalled();"
+- name: Should track productDetails if no product but DataLayer and Text mappings
+  code: |-
+    const mockData = {
+      customerId :'1234',
+      categoryPath: 'myCategoryPath',
+      eventType:'productDetail',
+      eventTypeParameter: 1,
+      parameterMapping: [
+         {"parameterName":"p3","parameterValue":"myProduct", "parameterSource":"variable"},
+      ]
+    };
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Verify that the tag finished successfully.
+    assertApi('gtmOnSuccess').wasCalled();
+
+    var raptorQueue = copyFromWindow('raptor.q');
+
+    var event1 = raptorQueue[1].params;
+
+    assertThat(event1).isDefined();
+    assertThat(event1.p1).isEqualTo('visit');
+    assertThat(event1.p3).isEqualTo('myProduct');
+- name: Should track productDetails if product and has both types of mappings
+  code: |-
+    const mockData = {
+      customerId :'1234',
+      categoryPath: 'myCategoryPath',
+      eventType:'productDetail',
+      eventTypeParameter: 1,
+      productObject:{productName: "Test"},
+      parameterMapping: [
+         {"parameterName":"p3","parameterValue":"myProduct", "parameterSource":"variable"},
+         {"parameterName":"p4","parameterValue":"productName", "parameterSource":"name"},
+      ]
+    };
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Verify that the tag finished successfully.
+    assertApi('gtmOnSuccess').wasCalled();
+
+    var raptorQueue = copyFromWindow('raptor.q');
+
+    var event1 = raptorQueue[1].params;
+
+    assertThat(event1).isDefined();
+    assertThat(event1.p1).isEqualTo('visit');
+    assertThat(event1.p3).isEqualTo('myProduct');
+    assertThat(event1.p4).isEqualTo('Test');
+- name: Should fail productDetails if no product and has name mappings
+  code: |-
+    const mockData = {
+      customerId :'1234',
+      categoryPath: 'myCategoryPath',
+      eventType:'productDetail',
+      eventTypeParameter: 1,
+      parameterMapping: [
+         {"parameterName":"p3","parameterValue":"myProduct", "parameterSource":"name"},
+      ]
+    };
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Verify that the tag finished successfully.
+    assertApi('gtmOnFailure').wasCalled();
+- name: Should track productDetails if product and only DataLayer and Text mappings
+  code: |-
+    const mockData = {
+      customerId :'1234',
+      categoryPath: 'myCategoryPath',
+      eventType:'productDetail',
+      eventTypeParameter: 1,
+      productObject:{productName: "Test"},
+      parameterMapping: [
+         {"parameterName":"p3","parameterValue":"myProduct", "parameterSource":"variable"},
+      ]
+    };
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Verify that the tag finished successfully.
+    assertApi('gtmOnSuccess').wasCalled();
+
+    var raptorQueue = copyFromWindow('raptor.q');
+
+    var event1 = raptorQueue[1].params;
+
+    assertThat(event1).isDefined();
+    assertThat(event1.p1).isEqualTo('visit');
+    assertThat(event1.p3).isEqualTo('myProduct');
+- name: Should track basketEvent if basketContent is empty
+  code: |-
+    const mockData = {
+      customerId :'1234',
+      eventType:'basketEvent',
+      eventTypeParameter: 1,
+       parameterMapping: [
+        {"parameterName":"p10","parameterValue":"", "parameterSource":"variable"},//basket content
+        {"parameterName":"p11","parameterValue":"3925737","parameterSource":"variable"},//basket Id
+        {"parameterName":"p2","parameterValue":"000000001946072","parameterSource":"variable"},//removed item id
+       ],
+    };
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    var raptorQueue = copyFromWindow('raptor.q');
+
+    assertThat(raptorQueue).isDefined();
+    assertThat(raptorQueue.length).isEqualTo(2);
+
+    var basketEvent = raptorQueue[1].params;
+
+    assertThat(basketEvent.p1).isEqualTo('basket');
+    assertThat(basketEvent.p10).isEqualTo('');
+    assertThat(basketEvent.p11).isEqualTo('3925737');
+    assertThat(basketEvent.p2).isEqualTo('000000001946072');
+
+    // Verify that the tag finished successfully.
+    assertApi('gtmOnSuccess').wasCalled();
 setup: |-
   const copyFromWindow = require('copyFromWindow');
   const log = require('logToConsole');
