@@ -236,7 +236,9 @@ You must specify the position of each parameter in custom parameter mapping sect
 
 Due to GDPR, you are not allowed to add a User ID as a tag in your Tag Manager setup as it will cause personal information to be stored in Google Analytics. Instead, you can pick up email addresses (or other unique identifiers) and improve the precision of your personal recommendations to your customers by adding following Ruid function in the JavaScript of your site. The goal is to bypass Google Tag Manager and send the User ID directly to Raptor.
 
+```js
 raptor.push("setRuid","USER_ID_HERE")
+```
 
 The function can be put anywhere on the web page, after the main tag has been fired
 
