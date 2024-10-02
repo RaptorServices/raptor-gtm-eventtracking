@@ -743,7 +743,7 @@ function calculateSubtotal(product, data, tracking) {
 
 function setMappedParameters(data, trackingObject, product) {
 
-  for (var i = 1; i < 41; i++) {
+  for (var i = 1; i <= 120; i++) {
     var foundParameter = tryGetParameterFromMapping(i);
 
     if (foundParameter) {
@@ -1457,6 +1457,36 @@ scenarios:
 
     // Verify that the tag finished successfully.
     assertApi('gtmOnSuccess').wasCalled();
+- name: Should track parameters above 100
+  code: |-
+    const mockData = {
+      customerId :'1234',
+      eventType:'custom',
+      eventTypeParameter: 1,
+      eventName: 'myCustomEvent',
+      parameterMapping: [
+        {"parameterName":"p101","parameterValue":"myValue", "parameterSource":"variable"},
+      ],
+    };
+
+
+
+    // Call runCode to run the template's code.
+    runCode(mockData);
+
+    // Verify that the tag finished successfully.
+    assertApi('gtmOnSuccess').wasCalled();
+
+    assertApi('callInWindow').wasCalled();
+    var raptorQueue = copyFromWindow('raptor.q');
+    assertThat(raptorQueue).isNotNull();
+    assertThat(raptorQueue.length).isEqualTo(2);
+
+    var event1 = raptorQueue[1].params;
+
+    assertThat(event1).isDefined();
+    assertThat(event1.p1).isEqualTo('myCustomEvent');
+    assertThat(event1.p101).isEqualTo('myValue');
 setup: |-
   const copyFromWindow = require('copyFromWindow');
   const log = require('logToConsole');
