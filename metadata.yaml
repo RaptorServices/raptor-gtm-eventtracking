@@ -2,7 +2,7 @@ homepage: "https://www.raptorservices.com"
 documentation: "https://github.com/RaptorServices/raptor-gtm-eventtracking"
 versions:
   # Latest version
-  - sha: 064e82c7340b01b8437273f9da85f32a1a46234d
+  - sha: 29b1a6886758fe81ae2f5481c8e53662f221f559
     changeNotes: version 1.5 - create visit,basket, and custom events without the need for product detail object
 
   # Previous versions
