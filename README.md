@@ -1,117 +1,117 @@
 # **Client-side tracking with Google Tag Manager**
 
-Raptor tracking is a powerful tool for collecting detailed analytics about user interactions on your website. By implementing Raptor tracking through Google Tag Manager (GTM), you can seamlessly gather data without modifying your website's code directly. This guide will walk you through the process of setting up Raptor tracking in GTM, suitable for beginners to intermediate users.
+Raptor tracking records how visitors interact with your website, including which products they view, add to the basket and purchase. Raptor uses this data to provide more relevant product recommendations.
+
+Google Tag Manager (GTM) lets you implement Raptor tracking without modifying your website's code. This guide describes the setup step by step.
+
+## How it works
+
+The setup consists of three parts:
+
+1. **The "Raptor Main" tag** loads Raptor on every page. All other Raptor tags depend on it.
+2. **"Raptor Event Tracking" tags** send events to Raptor, for example when a visitor views a product. You create one tag for each type of event.
+3. **The Data Layer** is where your website makes information available to GTM, such as the product ID and price. The event tags read their values from the Data Layer.
 
 ## Prerequisites
 
-Before we begin, ensure you have the following:
+Before you begin, make sure you have:
 
-- A Google Tag Manager account
-- A Raptor CustomerId. You will find your CustomerId in the Raptor Control Panel.
-- Basic understanding of GTM concepts
-- Access to your website’s GTM container
+- A Google Tag Manager account with access to your website's GTM container
+- Your Raptor **Customer ID**, which is available in the Raptor Control Panel
+- A basic understanding of GTM concepts: tags, triggers and variables
 
-## Importing Raptor Templates into GTM
+## Step 1: Add the Raptor templates to GTM
 
-To simplify using Raptor into GTM we have created our own tag templates, which will help you send tracking events more easily.
+Raptor provides two tag templates. Add both to your container:
 
-To import the templates into GTM you need to:
+1. Open your container in GTM.
+2. Select **Templates** in the left-hand menu.
+3. Under "Tag Templates", select **Search Gallery**.
+4. Search for "Raptor".
+5. Select **Raptor Main** and click **Add to Workspace**.
+6. Repeat steps 3 to 5 for **Raptor Event Tracking**.
 
-- Go to your container
-- Go to the "Templates" section in the left-hand menu.
-- Click on "Search Gallery."
-- In the search bar, type “Raptor”
-- Select “Raptor Main”
-- Click "Add to Workspace" to import the template into your GTM container.
-- Repeat the same, but this time select “Raptor Tracking Event” instead of “Raptor Main”
-
-You should now see both templates inside “Tag Templates”.
+Both templates are now listed under "Tag Templates".
 
 ![image](https://github.com/user-attachments/assets/c8395808-954a-45c2-bb89-802aec8ac43f)
 
-## Setup Main tag
+## Step 2: Set up the Raptor Main tag
 
-Now that we have our templates into the GTM container, let’s add the Main tag, because this injects the Raptor script into your page, which is required to push events into the system.
+The Raptor Main tag loads Raptor on your pages and is required by all other Raptor tags.
 
-Another important thing is to have the “Raptor Main” fire on all pages only AFTER cookies consent is given.
+> **Important:** The Raptor Main tag must only fire **after the visitor has given cookie consent**. The exact setup depends on your consent management solution.
 
-Let’s add the tag:
+1. Select **Tags** in the left-hand menu, then click **New**.
+2. Select **Tag Configuration** and choose **Raptor Main**.
+3. Enter your Raptor Customer ID.
+4. Under **Triggering**, select a trigger that fires on all pages once cookie consent has been given.
+5. Give the tag a descriptive name, for example "Raptor Main".
+6. Save the tag.
 
-- Go to your container
-- Go to the “Tags” section in the left-hand menu.
-- Press “New”
-- Press on “Tag Configuration”
-- Search for “Raptor Main” and select it
-- Put in your customer id from the Raptor System
-- After that press on “Triggering “ section, its below “Tag configuration”
-- Make sure you fire the tag on All Pages AFTER cookie consent. That can be different for every customer and GTM container and your cookie consent setup.
-- In the end name your tag into something that can help you distinguish it from others, we have seen that “Raptor Main” works just fine.
-
-Your tag should look something like this
+The tag should look similar to this:
 
 ![image](https://github.com/user-attachments/assets/530189cd-cff5-42c3-95da-a89e032dfa27)
 
-You can test that the tag works by pressing “Preview” inside GTM and put your website url. After accepting consent, you see that the event has fired.
+### Verify the setup
 
-![image](https://github.com/user-attachments/assets/5e0debbd-60a2-48d2-b9ba-38dcc4b1c18d)
+1. Click **Preview** in GTM and enter your website's address.
+2. Accept cookies on your website. The Raptor Main tag is now listed as fired.
 
-To see if the tag is properly working you can also go to your [Live Tracking Stream](https://controlpanel.raptorsmartadvisor.com/pc/customer/tnt/tracking) and see “pageview” events coming in. Raptor Main tag always sends “pageview” events.
+   ![image](https://github.com/user-attachments/assets/5e0debbd-60a2-48d2-b9ba-38dcc4b1c18d)
 
-![image](https://github.com/user-attachments/assets/fb52ef32-6855-4c8c-84bc-b9c148d8d651)
+3. Open the [Live Tracking Stream](https://controlpanel.raptorsmartadvisor.com/pc/customer/tnt/tracking) in the Raptor Control Panel. "pageview" events should now appear, as the Raptor Main tag sends one on every page.
 
-Note:
+   ![image](https://github.com/user-attachments/assets/fb52ef32-6855-4c8c-84bc-b9c148d8d651)
 
-You can try and decline cookies when previewing to make sure that the tag doesn’t fire if consent is not given.
+We also recommend declining cookies in Preview mode to confirm that the tag does **not** fire without consent.
 
-## GTM DataLayer
+## Step 3: Make sure your website populates the Data Layer
 
-Before we continue to creating Raptor events, we need to push data to GTM that we can catch it and use inside our tags. To do this we need to push data to the so called “Data Layer”.
+The event tags need information about visitor actions, such as which product was viewed. Your website provides this information by pushing it to the **Data Layer**. Most e-commerce platforms support this out of the box, often under the name "ecommerce" or "enhanced ecommerce" tracking. If your platform does not, your web developer can add it.
 
-You can read more about that in these articles from Google.
+Google's documentation on the Data Layer:
 
-<https://developers.google.com/tag-platform/tag-manager/datalayer>
+- <https://developers.google.com/tag-platform/tag-manager/datalayer>
+- <https://developers.google.com/analytics/devguides/collection/ua/gtm/enhanced-ecommerce#details>
 
-<https://developers.google.com/analytics/devguides/collection/ua/gtm/enhanced-ecommerce#details>
-
-And to test if you are pushing correctly to the data layer and see what exactly you are pushing, you can download this extension.
+To inspect what your website pushes to the Data Layer, you can use the following Chrome extension:
 
 <https://chromewebstore.google.com/detail/datalayer-checker/ffljdddodmkedhkcjhpmdajhjdbkogke>
 
 ![image](https://github.com/user-attachments/assets/83e937f2-2449-4f1b-92d3-b7aaeb72f161)
 
-## Creating an event tag
+## Step 4: Create an event tag
 
-Now that we have Raptor script inside our page and we have pushed data to our data layer, it’s time to create events.
+Create one event tag for each type of visitor action you want to track, such as product views, basket changes and purchases.
 
-You must create a tag for each event you want to push to Raptor - ProductDetail, addtocard, removefromcart, purchase, addUser etc.
+The following example sets up a **product view** ("visit") event. All other events are configured in the same way.
 
-Let’s start with creating a “visit” event and we will explain each property in detail that can help you create other events.
+1. Select **Tags** in the left-hand menu, then click **New**.
+2. Select **Tag Configuration** and choose **Raptor Event Tracking**.
 
-- Go to your container
-- Go to the “Tags” section in the left-hand menu.
-- Press “New”
-- Press on “Tag Configuration”
-- Search for “Raptor Event Tracking” and select it
+The sections below describe each setting.
 
-You should now see that you have to fill a lot of information for this tag, but let’s take it step by step.
+### Select the event type
 
-### Selecting an Event type
+The event type tells Raptor which action took place. The following event types are available:
 
-Event type is the first thing you need to do when creating an event. You are given 5 event types to select from.
+| Event type | Use when |
+| --- | --- |
+| **Product Detail (visit)** | A visitor views a product page. |
+| **Add or Remove from Basket (basket)** | A visitor adds a product to, or removes it from, the basket. See [Basket events](#basket-events). |
+| **Purchase (buy)** | A visitor completes an order. See [Purchase events](#purchase-events). |
+| **Raptor Module Click (itemClick)** | A visitor clicks a product recommended by Raptor. |
+| **Search** | A visitor performs a search on your website. |
+| **Search Click** | A visitor clicks a search result. |
+| **Custom Event** | Any other action. The event name is entered manually. |
 
-- Product Detail (visit)
-- Add or Remove from Basket (basket)
-- Purchase (buy)
-- Raptor Module Click (itemClick)
-- Custom event (used for any other type of event, but you can also write “visit”, “buy”, “basket” and “itemClick”)
+For this example, select **Product Detail (visit)**.
 
-Let’s select the “visit” event and continue to the next property that we need to fill out.
+### Select the source of the product information
 
-### Product Detail Object
+Product information can be provided to the tag in two ways. Choose the option that matches your Data Layer.
 
-This is used if you want to use a variable from the data layer that contains product details for example, which you will then use inside your mappings, though its not required and you can directly use data layer variables, but we will talk in more detail in the next section.
-
-In our example we will be using the “Product Detail Object” and we will select a variable that is pointing to “ecommerce.detail.products.0”, which looks like that and we will have it named “ecommerce product”.
+**Option A: Product object (recommended if available).** Many websites store all details of a product together in the Data Layer, for example:
 
 ```js
 {
@@ -134,112 +134,176 @@ In our example we will be using the “Product Detail Object” and we will sele
 }
 ```
 
-Our Tag Configuration looks like that now.
+Create a Data Layer variable that points to the product, in this case `ecommerce.detail.products.0`, and give it a name such as "ecommerce product". Select this variable in **Product Detail Object**. You can then refer to individual values by their field name, such as `id` or `price`.
 
 ![image](https://github.com/user-attachments/assets/42d1c503-d538-444d-af07-35553d134e05)
 
-But now let’s add mappings to the event.
+**Option B: Individual Data Layer variables.** Leave **Product Detail Object** empty and create a separate Data Layer variable for each value instead, for example "Product Details – name" pointing to `ecommerce.detail.products.0.name`.
 
-### Parameter Mapping
+### Map values to Raptor parameters
 
-This is where you map values from your data layer variables or your selected product detail object into the Raptor tracking parameters.
+Raptor receives each event as a set of numbered parameters: p1, p2, p3 and so on. The meaning of each parameter varies between Raptor customers. Your parameter overview is available in the Raptor Control Panel under **Integrations → [Implementing tracking](https://controlpanel.raptorsmartadvisor.com/pc/customer/tnt/tracking-implementation)**.
 
-You will find the tracking parameters for each event in the Raptor Control Panel: Integrations -> [Implementing tracking](https://controlpanel.raptorsmartadvisor.com/pc/customer/tnt/tracking-implementation)
-
-For example, parameters for “visit” event are:
+For example, the parameters for the "visit" event may look like this:
 
 ![image](https://github.com/user-attachments/assets/9a8f3cde-6c09-432f-96c9-912b4cedd957)
 
-You can now press the “Add the parameter” inside the tag so we can add a mapping and you will see 3 fields show up. We can see “Parameter Type”, “Parameter” and “Parameter property name/value”, so let’s talk about them in more detail.
+In the tag, click **Add Parameter** once for each parameter listed on that page. Each row contains three fields:
 
-#### Parameter Type
+| Field | Value |
+| --- | --- |
+| **Parameter Type** | "Product object field" when using option A. "Data Layer variable or constant value" when using option B or a constant value. |
+| **Parameter** | The parameter number from the Implementing tracking page, for example p2 for the product ID. |
+| **Field Name, Variable or Value** | Option A: the field name, for example `id`. Option B: click the variable icon on the right and select the variable. For a constant value, enter the value directly. |
 
-This is a select field where you have 2 options to select from:
+**p1** does not need to be mapped. The tag automatically sets it to the event type (visit, buy, basket and so on).
 
-- Object property name
-  - If you have selected a product detail object/array above, you can just specify the name of the property to track.  
-        From the example above of how our data layer looks like we can input for example “name”, “price” or any property from the object and when the tag fires it will pick up the value from the object and send it.
-- Datalayer Variable or Text value
-  - This is if you want to use a datalayer variable or just constant text. This can be useful if you don’t have a “Product Detail Object” and get all properties from the object into variables.  
-        For example, using our example object from above, you can have a variable called “Product Details – name” which points to “ecommerce.detail.products.0.name”
+The following examples all map p2 (the product ID):
 
-#### Parameter
+- **Product object field** (option A): enter `id`, as this is the name of the ID field in the product object.
 
-This is again a select where you choose to which parameter you want the property to be mapped to. You can see what is expected in each parameter from the [Implementing tracking](https://controlpanel.raptorsmartadvisor.com/pc/customer/tnt/tracking-implementation) page.
+  ![image](https://github.com/user-attachments/assets/b96d266f-79b2-4610-b259-1e8a9053b8b1)
 
-For example, the p2 parameter for the “visit” event corresponds to the “ProductId” for customer “5150”. Each customer can have different parameters.
+- **Data Layer variable** (option B): click the variable icon and select or create the variable.
 
-#### Parameter property name/value
+  ![image](https://github.com/user-attachments/assets/fde3ee19-3dc3-45ce-8527-02b6cecbd835)
 
-The last field is to write either the name of the property if we have selected something for “Product Detail Object” or select a data layer variable or simply write a text.
+- **Constant value**: enter the value. In this example, p2 is always "myId123".
 
-- If we have a variable inside “Product Detail Object”, we just write a property name of our object. Let’s say we want to map something into our p2 tag, which is the “ProductId” and It will look like that.  
-    ![image](https://github.com/user-attachments/assets/b96d266f-79b2-4610-b259-1e8a9053b8b1)
-    We put “id” because from the object example above we want to use the “id” for our p2. We can also put “name”, “price” or any other key/property from our object that we have inside “Product Detail Object”.
-- If we don’t have an object and want to use a datalayer variable, make sure you have selected “DataLayer Variable or Text Value” in your “Parameter Type” and there you can use the LEGO block on the right to select a datalayer variable. A new window will come from the right, where you can see all your variables and you need to select one or create a new one.  
-    ![image](https://github.com/user-attachments/assets/fde3ee19-3dc3-45ce-8527-02b6cecbd835)
-- Lastly, if you have a constant text just write what you want to always get. We will use the p2 tag again for the example.  
-    ![image](https://github.com/user-attachments/assets/f6488aec-285b-4251-9736-3b579dd98cd1)
-    Now when the tag fires, we will always have myId123 for p2.
+  ![image](https://github.com/user-attachments/assets/f6488aec-285b-4251-9736-3b579dd98cd1)
 
-That’s how you map variables, now you need to do this for each of the parameters that you have available and map them properly while making sure it’s the same as ones expected when you open “Implementation Trackings” page.
-
-And for our example, in the end the mappings will look like that:
+Once all parameters are mapped, the configuration may look like this:
 
 ![image](https://github.com/user-attachments/assets/8e94fb66-4627-41a9-913c-97c355ce7b56)
 
-Lastly, in order to finish our “visit” event we need to fire the tag when we visit a product page. You can create a trigger on product visit and its also good idea to have a rule for the trigger to fire only if the cookies are accepted. Same as what you have done for “Raptor Main” tag.
+### Add a trigger and save the tag
 
-And make sure you name your tag into something that helps you distinguish from others, we like to put “Raptor” in the beginning and the event type next so something like “Raptor – Visit”.
+1. Under **Triggering**, select a trigger that fires when a product page is viewed. As with the Raptor Main tag, the trigger must only fire after cookie consent has been given.
+2. Give the tag a descriptive name. We recommend "Raptor" followed by the event, for example "Raptor – Visit".
+3. Save the tag.
 
-In the end our tag should look something like this, where parameters and triggers can be different, but it doesn’t really matter.
+The finished tag should look similar to this. Your parameters and triggers may differ.
 
 ![image](https://github.com/user-attachments/assets/62f5265f-0490-4758-a172-b0d126929a0e)
 
-After we save the tag we can use the “Preview” to test.
+### Test the event
 
-In the example for the “view_item” event we can see that our “Raptor – Visit” has fired.
+1. Click **Preview** and open a product page on your website.
+2. Confirm that the "Raptor – Visit" tag has fired. In this example, it fires on the "view_item" event.
 
-![image](https://github.com/user-attachments/assets/fc5700ae-043c-4959-9971-c041a6020df5)
+   ![image](https://github.com/user-attachments/assets/fc5700ae-043c-4959-9971-c041a6020df5)
 
-And inside the tracking stream also see the “visit” event. You can also go up to the object and see that the data corresponds to what we have inside, because we have mapped the values from there into our parameters.
+3. Confirm that a "visit" event appears in the Live Tracking Stream. Compare its values with the product in the Data Layer to verify that all parameters are mapped correctly.
 
-![image](https://github.com/user-attachments/assets/24c6d3b2-6364-4151-ac2e-695de64799c6)
+   ![image](https://github.com/user-attachments/assets/24c6d3b2-6364-4151-ac2e-695de64799c6)
 
-You should now be able to do the other events by following the steps as all of them are pretty much the same with only difference is that they are different event types and datalayer variables.
+The remaining events are created in the same way: select the event type, choose the appropriate variables and map the parameters listed on the Implementing tracking page. Purchase and basket events have additional settings, which are described below.
 
-### Important note for buy event
+## Purchase events
 
-When you select a “buy” event as an event type you will have something else instead of “Product Details Object”. The name of the label will be “Purchased Products Array”, but it acts the same as the other one, with only difference is that it expects a list of items (array).
+When **Purchase (buy)** is selected, the "Product Detail Object" field is replaced by **Purchased Products Array**. Select a Data Layer variable that contains the **list of all products in the order**. With standard e-commerce tracking, this is usually `ecommerce.purchase.products`.
 
-So you need to make sure that you are passing a list of items there instead of just an object. The template behind the scenes will iterate through the list and send a “buy” event for each item in the list.
+The tag sends a separate "buy" event to Raptor for each product in the list. Parameters are mapped by field name, in the same way as for the product object.
 
-If you can’t send a list, nother solution would be to use data layer variables and send an event for each item in the list and the tag will fire, but you would need to use a “Custom Event” and write “buy” for the name.
+If your Data Layer does not provide such a list, you can send one event per product instead. Use **Custom Event** with the event name `buy` and fire the tag once for each product.
 
-#### Note about calculating subtotal in buy event
+### Calculate subtotal
 
-_This setting is only visible when selecting the "Purchase (buy)" event type_
+_Only available for "Purchase (buy)"._
 
-Check this checkbox if you want the tag to automatically calculate subtotals for each purchased item.
+When **Calculate subtotal** is enabled, the tag calculates the subtotal of each product (price × quantity) and sends it to Raptor. For example, a price of 100 and a quantity of 2 result in a subtotal of 200.
 
-The tag will calculate price \* quantity for each item in the products array, and insert the subtotal into a tracking parameter
+The parameters used for the price, quantity and subtotal are configured under **Custom Parameter Mapping**. The defaults are:
 
-You must specify the position of each parameter in custom parameter mapping section
+- Item Price Parameter Number: 12
+- Quantity Parameter Number: 13
+- Subtotal Parameter Number: 5
 
-**Custom parameter mapping:** Check with the tracking parameters in the Raptor Control Panel, and only change these values if your tracking template differs from the values below:
+Refer to the buy event on the Implementing tracking page, and only change these values if it specifies different parameters.
 
-- Item price parameter number (Default: 12)
-- Quantity parameter number (Default:13)
-- Subtotal parameter number (Default:5)
+### Empty the stored basket after the purchase
 
-## Add User Id
+_Only relevant if your basket tags store the basket in the visitor's browser (see [Basket events](#basket-events))._
 
-Due to GDPR, you are not allowed to add a User ID as a tag in your Tag Manager setup as it will cause personal information to be stored in Google Analytics. Instead, you can pick up email addresses (or other unique identifiers) and improve the precision of your personal recommendations to your customers by adding following Ruid function in the JavaScript of your site. The goal is to bypass Google Tag Manager and send the User ID directly to Raptor.
+Keep **Empty the stored basket after the purchase** enabled. The basket on your website is empty once an order is completed, and this setting ensures that the basket stored by the tag is emptied as well. Otherwise, the purchased products would still be reported to Raptor as basket content.
+
+## Basket events
+
+_These settings are only available for "Add or Remove from Basket (basket)"._
+
+Raptor requires the **complete basket content** with every basket event, not only the product that was added or removed. The tag supports two ways of providing it, selected under **Basket Content Source**:
+
+- **Provided in the Data Layer**: Select this option if your website already provides the complete list of basket products in the Data Layer. Map it to the basket content parameter (usually p10) under Parameter Mapping, in the same way as any other value. The product IDs must be provided as a comma-separated list, for example `1234,4567,3456`.
+- **Stored by the tag in the visitor's browser**: Select this option if your website only provides the product that was added or removed. The tag then stores the basket in the visitor's browser, updates it with every basket event and sends the complete basket to Raptor as a comma-separated list of product IDs.
+
+### Settings when the tag stores the basket
+
+| Setting | Value |
+| --- | --- |
+| **Basket Action** | The basket action that triggers the tag: **Add to basket**, **Remove from basket**, **Clear basket** or **Set basket**. |
+| **Product ID** | A Data Layer variable containing the ID of the product that was added or removed. Use the same product ID as in your other Raptor events. If several products are added at once, the variable may contain a list of IDs. Only shown for **Add to basket** and **Remove from basket**, or when the Basket Action is set by a variable. |
+| **Quantity** (default 1) | The number of units added or removed. Leave empty if the quantity is always 1, or select a Data Layer variable containing the quantity. The quantity itself is not sent to Raptor. Only shown for **Add to basket** and **Remove from basket**, or when the Basket Action is set by a variable. |
+| **Basket Product List** | Only shown for **Set basket**. A Data Layer variable containing the complete list of products in the basket, for example `ecommerce.items`. |
+| **Product ID Field Name** (default `id`) | Only shown for **Set basket**. The name of the field containing the product ID in each product of the list, for example `id` or `item_id`. Products without a value in this field are ignored. |
+| **Quantity Field Name** (default `quantity`) | Only shown for **Set basket**. The name of the field containing the quantity in each product of the list. If the value is missing or not a positive number, a quantity of 1 is used. Leave empty to count each product as 1 unit. |
+| **Basket Content Parameter Number** (default 10) | Located under **Basket Default Settings** (collapsed by default). The parameter used for the basket content. Refer to the basket event on the Implementing tracking page, and only change this value if it specifies a parameter other than p10. Do not map this parameter under Parameter Mapping as well, as the tag sets it automatically. |
+| **Basket Lifetime in Days** (default 30) | Located under **Basket Default Settings** (collapsed by default). If the basket has not changed for the specified number of days, the tag starts over with an empty basket. Set this to match your webshop's basket lifetime, or to 0 for an unlimited lifetime. |
+
+### Recommended setup
+
+We recommend creating **one tag per action**:
+
+- A "Raptor – Add to basket" tag with the Basket Action **Add to basket**, fired by your add-to-basket trigger.
+- A "Raptor – Remove from basket" tag with the Basket Action **Remove from basket**, fired by your remove-from-basket trigger.
+
+Alternatively, a single tag can handle all basket events. In that case, select a variable in **Basket Action** that contains `AddToBasket`, `RemoveFromBasket` or `ClearBasket` (not case-sensitive). **Set basket** always requires a separate tag with **Set basket** selected, as the product list settings are only shown for this action.
+
+### Set basket
+
+**Set basket** replaces the stored basket with a complete list of products from the Data Layer, and sends the updated basket to Raptor. Use it wherever your website provides the full basket content, for example on the basket page or at the start of the checkout. This keeps the stored basket in sync with the actual basket, even if it was changed in ways the other basket tags did not register.
+
+Example: the Data Layer contains the following basket, and **Product ID Field Name** is set to `item_id`:
 
 ```js
-raptor.push("setRuid","USER_ID_HERE")
+{
+    ecommerce: {
+        items: [
+            { item_id: '1234', item_name: 'T-shirt', quantity: 2 },
+            { item_id: '4567', item_name: 'Cap', quantity: 1 }
+        ]
+    }
+}
 ```
 
-The function can be put anywhere on the web page, after the main tag has been fired
+With **Basket Product List** pointing to `ecommerce.items`, the stored basket is replaced with 2 units of product 1234 and 1 unit of product 4567, and Raptor receives the basket content `1234,4567`. An empty list results in an empty basket.
 
-At Raptor, the User ID (e.g. the user's email address) is encrypted into a ReaID known only by Raptor. We use the ReaID to recognize the users when they for instance react on an email from your email marketing system.
+### Example
+
+| Visitor action | Basket content sent to Raptor |
+| --- | --- |
+| Adds 2 × product A | `A` |
+| Adds 1 × product B | `A,B` |
+| Removes 1 × product A | `A,B` (one unit of A remains in the basket) |
+| Removes 1 × product A | `B` |
+
+The tag keeps track of quantities to determine when a product has been removed from the basket completely. Only the product IDs are sent to Raptor, not the quantities.
+
+### Limitations
+
+- The stored basket is kept in the visitor's browser and only reflects changes registered by your basket tags.
+- If the basket can change in other ways, the stored basket may become out of sync, for example when the webshop empties the basket after a period of time, or when the visitor modifies it on another device. In these cases, fire a tag with **Set basket** or **Clear basket** at the appropriate time, or use the Data Layer option instead.
+- Because the tag stores information in the visitor's browser, your basket tags must also only fire after cookie consent has been given.
+
+## Add User ID
+
+To comply with GDPR, do not add a user ID (such as an email address) to your GTM tags, as it could end up as personal data in Google Analytics.
+
+Instead, send the user ID directly to Raptor by adding the following line to your website's JavaScript, for example when a visitor logs in or subscribes to the newsletter:
+
+```js
+raptor.push("setEmailMarketingId","USER_ID_HERE")
+```
+
+Replace `USER_ID_HERE` with the visitor's email address or another unique identifier. The line can be placed anywhere on the page, but only takes effect once the Raptor Main tag has loaded.
+
+Raptor encrypts the user ID into a "ReaID" that is known only to Raptor. This allows Raptor to recognise the visitor at a later point, for example when they click a link in one of your marketing emails, and improves their personal recommendations.
