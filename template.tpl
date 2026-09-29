@@ -1,4 +1,4 @@
-﻿___TERMS_OF_SERVICE___
+___TERMS_OF_SERVICE___
 
 By creating or modifying this file you agree to Google Tag Manager's Community
 Template Gallery Developer Terms of Service available at
@@ -45,7 +45,7 @@ ___TEMPLATE_PARAMETERS___
       },
       {
         "value": "basketEvent",
-        "displayValue": "Add or Remove from Basket (basket)"
+        "displayValue": "Add, Remove or update Basket (basket)"
       },
       {
         "value": "purchase",
@@ -64,6 +64,10 @@ ___TEMPLATE_PARAMETERS___
         "displayValue": "Search Click"
       },
       {
+        "value": "setEmailMarketingId",
+        "displayValue": "Set Email Marketing ID (user identification)"
+      },
+      {
         "value": "custom",
         "displayValue": "Custom Event"
       }
@@ -75,7 +79,7 @@ ___TEMPLATE_PARAMETERS___
         "type": "NON_EMPTY"
       }
     ],
-    "help": "Select the visitor action this tag reports to Raptor:\u003cul\u003e\u003cli\u003e\u003cb\u003eProduct Detail\u003c/b\u003e: a visitor views a product page.\u003c/li\u003e\u003cli\u003e\u003cb\u003eAdd or Remove from Basket\u003c/b\u003e: a visitor changes the basket content.\u003c/li\u003e\u003cli\u003e\u003cb\u003ePurchase\u003c/b\u003e: a visitor completes an order.\u003c/li\u003e\u003cli\u003e\u003cb\u003eRaptor Module Click\u003c/b\u003e: a visitor clicks a product recommended by Raptor.\u003c/li\u003e\u003cli\u003e\u003cb\u003eSearch\u003c/b\u003e / \u003cb\u003eSearch Click\u003c/b\u003e: a visitor performs a search or clicks a search result.\u003c/li\u003e\u003cli\u003e\u003cb\u003eCustom Event\u003c/b\u003e: any other action. The event name is entered manually.\u003c/li\u003e\u003c/ul\u003eCreate a separate tag for each event you want to track."
+    "help": "Select the visitor action this tag reports to Raptor:\u003cul\u003e\u003cli\u003e\u003cb\u003eProduct Detail\u003c/b\u003e: a visitor views a product page.\u003c/li\u003e\u003cli\u003e\u003cb\u003eAdd or Remove from Basket\u003c/b\u003e: a visitor changes the basket content.\u003c/li\u003e\u003cli\u003e\u003cb\u003ePurchase\u003c/b\u003e: a visitor completes an order.\u003c/li\u003e\u003cli\u003e\u003cb\u003eRaptor Module Click\u003c/b\u003e: a visitor clicks a product recommended by Raptor.\u003c/li\u003e\u003cli\u003e\u003cb\u003eSearch\u003c/b\u003e / \u003cb\u003eSearch Click\u003c/b\u003e: a visitor performs a search or clicks a search result.\u003c/li\u003e\u003cli\u003e\u003cb\u003eSet Email Marketing ID\u003c/b\u003e: a visitor identifies themselves, for example by logging in or subscribing to the newsletter. Sends the visitor\u0027s email address or another unique ID to Raptor.\u003c/li\u003e\u003cli\u003e\u003cb\u003eCustom Event\u003c/b\u003e: any other action. The event name is entered manually.\u003c/li\u003e\u003c/ul\u003eCreate a separate tag for each event you want to track."
   },
   {
     "type": "CHECKBOX",
@@ -93,28 +97,7 @@ ___TEMPLATE_PARAMETERS___
     ],
     "help": "Calculates the subtotal of each purchased product (price × quantity) and sends it to Raptor.\u003cbr/\u003eExample: a price of 100 and a quantity of 2 result in a subtotal of 200.\u003cbr/\u003eThe price, quantity and subtotal parameters are configured under \"Custom Parameter Mapping\". The default values apply to most setups."
   },
-  {
-    "type": "SELECT",
-    "name": "raptorModule",
-    "displayName": "Clicked Raptor Module",
-    "macrosInSelect": true,
-    "selectItems": [],
-    "simpleValueType": true,
-    "help": "Select the Data Layer variable containing the name of the Raptor module (product recommendation) that the visitor clicked.\u003cbr/\u003eThe variable must only contain a value when a Raptor module was clicked, and be empty otherwise.\u003cbr/\u003eExample: if the visitor clicked a product in the \"GetSimilarItems\" module, the variable must contain \"GetSimilarItems\".\u003cbr/\u003eThis setting is optional for basket events. If the product was added to the basket from a Raptor module, the click is reported to Raptor as well.",
-    "enablingConditions": [
-      {
-        "paramName": "eventType",
-        "paramValue": "basketEvent",
-        "type": "EQUALS"
-      },
-      {
-        "paramName": "eventType",
-        "paramValue": "raptorModuleClick",
-        "type": "EQUALS"
-      }
-    ],
-    "notSetText": "Select the Raptor module variable"
-  },
+  
   {
     "type": "GROUP",
     "name": "basketContentGroup",
@@ -451,6 +434,48 @@ ___TEMPLATE_PARAMETERS___
         "type": "NON_EMPTY"
       }
     ]
+  },
+  {
+    "type": "TEXT",
+    "name": "emailMarketingId",
+    "displayName": "Email Marketing ID",
+    "simpleValueType": true,
+    "valueHint": "Select a variable",
+    "enablingConditions": [
+      {
+        "paramName": "eventType",
+        "paramValue": "setEmailMarketingId",
+        "type": "EQUALS"
+      }
+    ],
+    "valueValidators": [
+      {
+        "type": "NON_EMPTY"
+      }
+    ],
+    "help": "Select the Data Layer variable containing the visitor\u0027s email address or another unique ID. Raptor encrypts it into a \"ReaID\" that is known only to Raptor, which allows Raptor to recognise the visitor later, for example when they click a link in one of your marketing emails.\u003cbr/\u003e\u003cbr/\u003eFire this tag when the visitor is known, for example after logging in, subscribing to the newsletter or completing the checkout. If the variable is empty, the tag does nothing.\u003cbr/\u003e\u003cbr/\u003e\u003cb\u003eImportant:\u003c/b\u003e the value passes through the Data Layer and GTM. To comply with GDPR, make sure this variable is not sent to Google Analytics, for example as an event parameter or user property in your GA4 tags."
+  },
+  {
+    "type": "SELECT",
+    "name": "raptorModule",
+    "displayName": "Clicked Raptor Module",
+    "macrosInSelect": true,
+    "selectItems": [],
+    "simpleValueType": true,
+    "help": "Select the Data Layer variable containing the name of the Raptor module (product recommendation) that the visitor clicked.\u003cbr/\u003eThe variable must only contain a value when a Raptor module was clicked, and be empty otherwise.\u003cbr/\u003eExample: if the visitor clicked a product in the \"GetSimilarItems\" module, the variable must contain \"GetSimilarItems\".\u003cbr/\u003eThis setting is optional for basket events. If the product was added to the basket from a Raptor module, the click is reported to Raptor as well. The click uses the same Parameter Mapping as the basket event, so make sure the product ID is mapped there, for example to p2.",
+    "enablingConditions": [
+      {
+        "paramName": "eventType",
+        "paramValue": "basketEvent",
+        "type": "EQUALS"
+      },
+      {
+        "paramName": "eventType",
+        "paramValue": "raptorModuleClick",
+        "type": "EQUALS"
+      }
+    ],
+    "notSetText": "Select the Raptor module variable"
   },
   {
     "type": "GROUP",
@@ -804,6 +829,13 @@ ___TEMPLATE_PARAMETERS___
       }
     ],
     "alwaysInSummary": true,
+    "enablingConditions": [
+      {
+        "paramName": "eventType",
+        "paramValue": "setEmailMarketingId",
+        "type": "NOT_EQUALS"
+      }
+    ],
     "newRowButtonText": "Add Parameter",
     "help": "Defines which value is sent in which Raptor parameter (p2, p3, etc.).\u003cbr/\u003e\u003cbr/\u003eThe parameters for each event are listed on the \"Implementing tracking\" page in the Raptor Control Panel. Add one row for each parameter.\u003cbr/\u003eExample: the product ID is p2 in the visit event, and the product object contains the ID in a field named \"id\".\n\u003col\u003e\n\u003cli\u003eClick \"Add Parameter\".\u003c/li\u003e\n\u003cli\u003eParameter Type: select \"Product object field\".\u003c/li\u003e\n\u003cli\u003eParameter: select \"p2\".\u003c/li\u003e\n\u003cli\u003eField Name, Variable or Value: enter \"id\".\u003c/li\u003e\n\u003c/ol\u003e\nIf no product object is used, select \"Data Layer variable or constant value\" as the parameter type, then select a variable or enter a constant value.\u003cbr/\u003e\u003cbr/\u003ep1 does not need to be mapped. The tag automatically sets it to the event type (visit, buy, basket, etc.)."
   },
@@ -812,6 +844,13 @@ ___TEMPLATE_PARAMETERS___
     "name": "defaultSettingsGroup",
     "displayName": "Default Settings",
     "groupStyle": "ZIPPY_CLOSED",
+    "enablingConditions": [
+      {
+        "paramName": "eventType",
+        "paramValue": "setEmailMarketingId",
+        "type": "NOT_EQUALS"
+      }
+    ],
     "subParams": [
       {
         "type": "TEXT",
@@ -877,6 +916,9 @@ switch (data.eventType) {
   case 'searchclick':
     succeeded = defaultEvent('searchclick');
     break;
+  case 'setEmailMarketingId':
+    succeeded = setEmailMarketingIdEvent();
+    break;
   default:
     succeeded = defaultEvent(data.eventName);
 
@@ -913,6 +955,19 @@ function defaultEvent(eventName) {
 
 }
 
+// Skips (without failing) when the id is empty, so the tag can fire on every page and only acts once the visitor is known.
+function setEmailMarketingIdEvent() {
+
+  var id = data.emailMarketingId == null ? '' : makeString(data.emailMarketingId).trim();
+  if (!id) {
+    log('No email marketing id found, setEmailMarketingId was not sent');
+    return;
+  }
+
+  callInWindow('raptor.push', 'setEmailMarketingId', id);
+
+}
+
 
 
 function basketEvent() {
@@ -923,17 +978,13 @@ function basketEvent() {
     if (basketContent == null) return false;
   }
 
+  // The product was added from a Raptor module, so the click is reported as well, using the basket event's parameter mapping.
   if (data.raptorModule) {
+    var trackingObject = {};
 
-
-    var product = data.productObject;
-    if (product) {
-      var trackingObject = {};
-
-      setMappedParameters(data, trackingObject, product);
-      setEventType('itemclick', data.eventTypeParameter, trackingObject);
-      callInWindow('raptor.push', 'trackEvent', trackingObject, { moduleName: data.raptorModule });
-    }
+    setMappedParameters(data, trackingObject);
+    setEventType('itemclick', data.eventTypeParameter, trackingObject);
+    callInWindow('raptor.push', 'trackEvent', trackingObject, { moduleName: data.raptorModule });
   }
 
   var basketTracking = {};
@@ -1685,11 +1736,10 @@ scenarios:
       eventType:'basketEvent',
       raptorModule: 'GetSimilarItems',
       eventTypeParameter: 1,
-      productObject: {
-        id:'12345'
-      },
+      basketTrackingMode: 'external',
        parameterMapping: [
-        {"parameterName":"p2","parameterValue":"id", "parameterKind":"name"}
+        {"parameterName":"p2","parameterValue":"12345", "parameterSource":"variable"},
+        {"parameterName":"p10","parameterValue":"12345,67890", "parameterSource":"variable"}
        ],
     };
 
@@ -1707,17 +1757,69 @@ scenarios:
 
     var pageView = raptorQueue[0].params;
     var itemClick = raptorQueue[1].params;
-    var basketEvent = raptorQueue[1].params;
+    var basketEvent = raptorQueue[2].params;
 
     assertThat(pageView).isDefined();
 
 
     assertThat(itemClick.p1).isEqualTo('itemclick');
     assertThat(itemClick.p2).isEqualTo('12345');
+    assertThat(raptorQueue[1].options.moduleName).isEqualTo('GetSimilarItems');
+    assertThat(basketEvent.p1).isEqualTo('basket');
+    assertThat(basketEvent.p10).isEqualTo('12345,67890');
 
 
 
     // Verify that the tag finished successfully.
+    assertApi('gtmOnSuccess').wasCalled();
+- name: Should track itemclick on raptor basket event with internal basket
+  code: |-
+    const mockData = {
+      eventType:'basketEvent',
+      eventTypeParameter: 1,
+      raptorModule: 'GetSimilarItems',
+      basketTrackingMode: 'internal',
+      basketAction: 'AddToBasket',
+      basketProductId: '12345',
+      basketContentParameterNumber: 10,
+      basketExpiryDays: 0,
+      parameterMapping: [
+        {"parameterName":"p2","parameterValue":"12345", "parameterSource":"variable"}
+      ]
+    };
+
+    runCode(mockData);
+
+    var raptorQueue = copyFromWindow('raptor.q');
+    assertThat(raptorQueue.length).isEqualTo(3);
+    assertThat(raptorQueue[1].params.p1).isEqualTo('itemclick');
+    assertThat(raptorQueue[1].params.p2).isEqualTo('12345');
+    assertThat(raptorQueue[1].params.p10).isUndefined();
+    assertThat(raptorQueue[1].options.moduleName).isEqualTo('GetSimilarItems');
+    assertThat(raptorQueue[2].params.p1).isEqualTo('basket');
+    assertThat(raptorQueue[2].params.p10).isEqualTo('12345');
+    assertApi('gtmOnSuccess').wasCalled();
+- name: Should not track itemclick on basket event without raptor module
+  code: |-
+    const mockData = {
+      eventType:'basketEvent',
+      eventTypeParameter: 1,
+      raptorModule: '',
+      basketTrackingMode: 'internal',
+      basketAction: 'AddToBasket',
+      basketProductId: '12345',
+      basketContentParameterNumber: 10,
+      basketExpiryDays: 0,
+      parameterMapping: [
+        {"parameterName":"p2","parameterValue":"12345", "parameterSource":"variable"}
+      ]
+    };
+
+    runCode(mockData);
+
+    var raptorQueue = copyFromWindow('raptor.q');
+    assertThat(raptorQueue.length).isEqualTo(2);
+    assertThat(raptorQueue[1].params.p1).isEqualTo('basket');
     assertApi('gtmOnSuccess').wasCalled();
 - name: Should track purchase events
   code: "const mockData = {\n  customerId :'1234',\n  eventType:'purchase',\n  eventTypeParameter:\
@@ -2494,6 +2596,35 @@ scenarios:
     var raptorQueue = copyFromWindow('raptor.q');
     assertThat(raptorQueue.length).isEqualTo(1);
     assertThat(JSON.parse(mockStorage.raptorBasket).items).isEqualTo([{ id: 'old', qty: 1 }]);
+- name: Should set email marketing id
+  code: |-
+    const mockData = {
+      eventType:'setEmailMarketingId',
+      eventTypeParameter: 1,
+      emailMarketingId: '  user@example.com '
+    };
+
+    runCode(mockData);
+
+    var raptorQueue = copyFromWindow('raptor.q');
+    assertThat(raptorQueue.length).isEqualTo(2);
+    assertThat(raptorQueue[1].event).isEqualTo('setEmailMarketingId');
+    assertThat(raptorQueue[1].params).isEqualTo('user@example.com');
+    assertApi('gtmOnSuccess').wasCalled();
+- name: Should skip set email marketing id when empty
+  code: |-
+    const mockData = {
+      eventType:'setEmailMarketingId',
+      eventTypeParameter: 1,
+      emailMarketingId: ''
+    };
+
+    runCode(mockData);
+
+    var raptorQueue = copyFromWindow('raptor.q');
+    assertThat(raptorQueue.length).isEqualTo(1);
+    assertApi('gtmOnSuccess').wasCalled();
+    assertApi('gtmOnFailure').wasNotCalled();
 setup: |-
   const copyFromWindow = require('copyFromWindow');
   const log = require('logToConsole');

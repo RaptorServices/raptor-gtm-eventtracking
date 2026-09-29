@@ -103,6 +103,7 @@ The event type tells Raptor which action took place. The following event types a
 | **Raptor Module Click (itemClick)** | A visitor clicks a product recommended by Raptor. |
 | **Search** | A visitor performs a search on your website. |
 | **Search Click** | A visitor clicks a search result. |
+| **Set Email Marketing ID (user identification)** | A visitor identifies themselves, for example by logging in or subscribing to the newsletter. See [Add User ID](#add-user-id). |
 | **Custom Event** | Any other action. The event name is entered manually. |
 
 For this example, select **Product Detail (visit)**.
@@ -258,6 +259,12 @@ We recommend creating **one tag per action**:
 
 Alternatively, a single tag can handle all basket events. In that case, select a variable in **Basket Action** that contains `AddToBasket`, `RemoveFromBasket` or `ClearBasket` (not case-sensitive). **Set basket** always requires a separate tag with **Set basket** selected, as the product list settings are only shown for this action.
 
+### Products added from a Raptor module
+
+If a visitor adds a product to the basket directly from a Raptor module (product recommendation), Raptor should also receive the click. Select a Data Layer variable in **Clicked Raptor Module** on your add-to-basket tag that contains the module name, for example `GetSimilarItems`, when the product was added from a module, and is empty otherwise.
+
+The tag then sends an "itemclick" event before the basket event. The click uses the same **Parameter Mapping** as the basket event, so make sure the product ID is mapped there, for example to p2.
+
 ### Set basket
 
 **Set basket** replaces the stored basket with a complete list of products from the Data Layer, and sends the updated basket to Raptor. Use it wherever your website provides the full basket content, for example on the basket page or at the start of the checkout. This keeps the stored basket in sync with the actual basket, even if it was changed in ways the other basket tags did not register.
@@ -268,8 +275,8 @@ Example: the Data Layer contains the following basket, and **Product ID Field Na
 {
     ecommerce: {
         items: [
-            { item_id: '1234', item_name: 'T-shirt', quantity: 2 },
-            { item_id: '4567', item_name: 'Cap', quantity: 1 }
+            { id: '1234', name: 'T-shirt', quantity: 2 },
+            { id: '4567', name: 'Cap', quantity: 1 }
         ]
     }
 }
@@ -296,14 +303,33 @@ The tag keeps track of quantities to determine when a product has been removed f
 
 ## Add User ID
 
-To comply with GDPR, do not add a user ID (such as an email address) to your GTM tags, as it could end up as personal data in Google Analytics.
+When a visitor identifies themselves, for example by logging in, subscribing to the newsletter or completing the checkout, you can send their email address or another unique identifier to Raptor.
 
-Instead, send the user ID directly to Raptor by adding the following line to your website's JavaScript, for example when a visitor logs in or subscribes to the newsletter:
+Raptor encrypts the user ID into a "ReaID" that is known only to Raptor. This allows Raptor to recognise the visitor at a later point, for example when they click a link in one of your marketing emails, and improves their personal recommendations.
+
+The user ID can be sent in two ways.
+
+### Option A: Use a GTM tag (no code required)
+
+1. Create a new **Raptor Event Tracking** tag.
+2. Select the event type **Set Email Marketing ID (user identification)**.
+3. In **Email Marketing ID**, select a Data Layer variable containing the visitor's email address or other unique identifier.
+4. Under **Triggering**, select a trigger that fires when the visitor is known, for example after logging in or subscribing to the newsletter. As with all Raptor tags, it must only fire after cookie consent has been given.
+5. Give the tag a descriptive name, for example "Raptor – Set Email Marketing ID", and save it.
+
+If the variable is empty when the tag fires, the tag does nothing. The tag can therefore also fire on every page, and only sends the user ID once the visitor is known.
+
+> **Important: keep the user ID out of Google Analytics.** With this option, the user ID passes through the Data Layer and GTM. To comply with GDPR, make sure it is **not** sent to Google Analytics as personal data:
+>
+> - Do not add the user ID variable to your GA4 tags, for example as an event parameter or user property.
+> - If your Google Analytics setup forwards all Data Layer values automatically, exclude the Data Layer key containing the user ID.
+
+### Option B: Use JavaScript on your website
+
+If you prefer to keep the user ID out of GTM entirely, send it directly to Raptor by adding the following line to your website's JavaScript at the point where the visitor becomes known:
 
 ```js
 raptor.push("setEmailMarketingId","USER_ID_HERE")
 ```
 
 Replace `USER_ID_HERE` with the visitor's email address or another unique identifier. The line can be placed anywhere on the page, but only takes effect once the Raptor Main tag has loaded.
-
-Raptor encrypts the user ID into a "ReaID" that is known only to Raptor. This allows Raptor to recognise the visitor at a later point, for example when they click a link in one of your marketing emails, and improves their personal recommendations.
