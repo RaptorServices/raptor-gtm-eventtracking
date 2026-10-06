@@ -1,4 +1,4 @@
-___TERMS_OF_SERVICE___
+﻿___TERMS_OF_SERVICE___
 
 By creating or modifying this file you agree to Google Tag Manager's Community
 Template Gallery Developer Terms of Service available at
@@ -109,13 +109,13 @@ ___TEMPLATE_PARAMETERS___
         "name": "basketTrackingMode",
         "displayName": "Basket Content Source",
         "radioItems": [
-           {
-            "value": "internal",
-            "displayValue": "Stored by the tag in the visitor\u0027s browser (recommended)"
-          },
           {
             "value": "external",
             "displayValue": "Provided in the Data Layer (mapped under \"Parameter Mapping\")"
+          },
+          {
+            "value": "internal",
+            "displayValue": "Stored by the tag in the visitor\u0027s browser"
           }
         ],
         "simpleValueType": true,
@@ -159,7 +159,7 @@ ___TEMPLATE_PARAMETERS___
             "type": "NON_EMPTY"
           }
         ],
-        "help": "The basket action that triggers this tag.\u003cbr/\u003e\u003cbr/\u003eWe recommend one tag per action: an \"Add to basket\" tag and a \"Remove from basket\" tag, each with its own trigger.\u003cbr/\u003e\u003cbr/\u003eAlternatively, a single tag can handle all basket events. In that case, select a variable containing AddToBasket, RemoveFromBasket or ClearBasket (not case-sensitive).\u003cbr/\u003e\u003cbr/\u003e\"Set basket\" replaces the stored basket with a complete list of products, for example when the visitor opens the basket page. It requires a separate tag with \"Set basket\" selected, as the product list settings are only shown for this action."
+        "help": "The basket action that triggers this tag.\u003cbr/\u003e\u003cbr/\u003eWe recommend one tag per action: an \"Add to basket\" tag and a \"Remove from basket\" tag, each with its own trigger.\u003cbr/\u003e\u003cbr/\u003eAlternatively, a single tag can handle all basket events. In that case, select a variable containing AddToBasket, RemoveFromBasket, ClearBasket or SetBasket (not case-sensitive). Other values, such as the GA4 event names add_to_cart or remove_from_cart, are not recognised. Use a Lookup Table variable to translate them, for example add_to_cart to AddToBasket.\u003cbr/\u003e\u003cbr/\u003e\"Set basket\" replaces the stored basket with a complete list of products, for example when the visitor opens the basket page."
       },
       {
         "type": "GROUP",
@@ -223,60 +223,81 @@ ___TEMPLATE_PARAMETERS___
         "type": "GROUP",
         "name": "setBasketGroup",
         "groupStyle": "NO_ZIPPY",
-        "subParams": [
-          {
-            "type": "SELECT",
-            "name": "basketProductList",
-            "displayName": "Basket Product List",
-            "macrosInSelect": true,
-            "selectItems": [],
-            "simpleValueType": true,
-            "notSetText": "Select the basket product list variable",
-            "enablingConditions": [
-              {
-                "paramName": "basketAction",
-                "paramValue": "SetBasket",
-                "type": "EQUALS"
-              }
-            ],
-            "help": "Select a Data Layer variable containing the complete list of products in the basket, for example \"ecommerce.items\". The stored basket is replaced with the products in this list, and the updated basket is sent to Raptor. An empty list results in an empty basket."
-          },
-          {
-            "type": "TEXT",
-            "name": "basketProductIdField",
-            "displayName": "Product ID Field Name (default id)",
-            "simpleValueType": true,
-            "defaultValue": "id",
-            "enablingConditions": [
-              {
-                "paramName": "basketAction",
-                "paramValue": "SetBasket",
-                "type": "EQUALS"
-              }
-            ],
-            "help": "The name of the field containing the product ID in each product of the basket product list, for example \"id\" or \"item_id\". Products without a value in this field are ignored."
-          },
-          {
-            "type": "TEXT",
-            "name": "basketQuantityField",
-            "displayName": "Quantity Field Name (default quantity)",
-            "simpleValueType": true,
-            "defaultValue": "quantity",
-            "enablingConditions": [
-              {
-                "paramName": "basketAction",
-                "paramValue": "SetBasket",
-                "type": "EQUALS"
-              }
-            ],
-            "help": "The name of the field containing the quantity in each product of the basket product list. If the field is empty, missing or not a positive number, a quantity of 1 is used. Leave this field empty to count each product as 1 unit."
-          }
-        ],
         "enablingConditions": [
           {
             "paramName": "basketTrackingMode",
             "paramValue": "internal",
             "type": "EQUALS"
+          }
+        ],
+        "subParams": [
+          {
+            "type": "GROUP",
+            "name": "setBasketNotAddGroup",
+            "groupStyle": "NO_ZIPPY",
+            "enablingConditions": [
+              {
+                "paramName": "basketAction",
+                "paramValue": "AddToBasket",
+                "type": "NOT_EQUALS"
+              }
+            ],
+            "subParams": [
+              {
+                "type": "GROUP",
+                "name": "setBasketNotRemoveGroup",
+                "groupStyle": "NO_ZIPPY",
+                "enablingConditions": [
+                  {
+                    "paramName": "basketAction",
+                    "paramValue": "RemoveFromBasket",
+                    "type": "NOT_EQUALS"
+                  }
+                ],
+                "subParams": [
+                  {
+                    "type": "GROUP",
+                    "name": "setBasketFieldsGroup",
+                    "groupStyle": "NO_ZIPPY",
+                    "enablingConditions": [
+                      {
+                        "paramName": "basketAction",
+                        "paramValue": "ClearBasket",
+                        "type": "NOT_EQUALS"
+                      }
+                    ],
+                    "subParams": [
+                      {
+                        "type": "SELECT",
+                        "name": "basketProductList",
+                        "displayName": "Basket Product List",
+                        "macrosInSelect": true,
+                        "selectItems": [],
+                        "simpleValueType": true,
+                        "notSetText": "Select the basket product list variable",
+                        "help": "Select a Data Layer variable containing the complete list of products in the basket, for example \"ecommerce.items\". The stored basket is replaced with the products in this list, and the updated basket is sent to Raptor. An empty list results in an empty basket.\u003cbr/\u003e\u003cbr/\u003eOnly shown for \"Set basket\", or when the basket action is set by a variable."
+                      },
+                      {
+                        "type": "TEXT",
+                        "name": "basketProductIdField",
+                        "displayName": "Product ID Field Name (default id)",
+                        "simpleValueType": true,
+                        "defaultValue": "id",
+                        "help": "The name of the field containing the product ID in each product of the basket product list, for example \"id\" or \"item_id\". Products without a value in this field are ignored."
+                      },
+                      {
+                        "type": "TEXT",
+                        "name": "basketQuantityField",
+                        "displayName": "Quantity Field Name (default quantity)",
+                        "simpleValueType": true,
+                        "defaultValue": "quantity",
+                        "help": "The name of the field containing the quantity in each product of the basket product list. If the field is empty, missing or not a positive number, a quantity of 1 is used. Leave this field empty to count each product as 1 unit."
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -453,7 +474,7 @@ ___TEMPLATE_PARAMETERS___
         "type": "NON_EMPTY"
       }
     ],
-    "help": "Select the Data Layer variable containing the visitor\u0027s email address or another unique ID. Raptor encrypts it into a \"ReaID\" that is known only to Raptor, which allows Raptor to recognise the visitor later, for example when they click a link in one of your marketing emails.\u003cbr/\u003e\u003cbr/\u003eFire this tag when the visitor is known, for example after logging in, subscribing to the newsletter or completing the checkout. If the variable is empty, the tag does nothing.\u003cbr/\u003e\u003cbr/\u003e\u003cb\u003eImportant:\u003c/b\u003e the value passes through the Data Layer and GTM. To comply with GDPR, make sure this variable is not sent to Google Analytics, for example as an event parameter or user property in your GA4 tags."
+    "help": "Select the Data Layer variable containing the visitor\u0027s email address or another unique ID. Raptor encrypts it into a \"ReaID\" that is known only to Raptor, which allows Raptor to recognise the visitor later, for example when they click a link in one of your marketing emails.\u003cbr/\u003e\u003cbr/\u003eFire this tag when the visitor is known, for example after logging in, subscribing to the newsletter or completing the checkout. If the variable is empty, the tag does nothing.\u003cbr/\u003e\u003cbr/\u003e\u003cb\u003eImportant:\u003c/b\u003e the value passes through the Data Layer and GTM. To comply with GDPR, make sure this variable is not sent to Google Analytics, for example as an event parameter or user property in your GA4 tags.\u003cbr/\u003e\u003cbr/\u003eAs with all Raptor tags, this tag must only fire after the visitor has given consent."
   },
   {
     "type": "SELECT",
@@ -499,7 +520,7 @@ ___TEMPLATE_PARAMETERS___
         ],
         "alwaysInSummary": true,
         "notSetText": "Select the product variable",
-        "help": "Optional. Select a Data Layer variable containing all product details (ID, name, price, etc.). Its fields can then be mapped by name under \"Parameter Mapping\", for example \"id\" or \"price\".\u003cbr/\u003e\u003cbr/\u003eWith standard e-commerce tracking, this variable usually points to \"ecommerce.detail.products.0\".\u003cbr/\u003e\u003cbr/\u003eIf no such variable is available, leave this field empty and map a separate Data Layer variable for each value instead."
+        "help": "Optional. Select a Data Layer variable containing all product details (ID, name, price, etc.). Its fields can then be mapped by name under \"Parameter Mapping\", for example \"id\" or \"price\".\u003cbr/\u003e\u003cbr/\u003eFor basket events, select the product that was added or removed. Its fields are used for the basket event and, if a Raptor module was clicked, for the module click.\u003cbr/\u003e\u003cbr/\u003eWith standard e-commerce tracking, this variable usually points to \"ecommerce.detail.products.0\".\u003cbr/\u003e\u003cbr/\u003eIf no such variable is available, leave this field empty and map a separate Data Layer variable for each value instead."
       },
       {
         "type": "SELECT",
@@ -524,6 +545,11 @@ ___TEMPLATE_PARAMETERS___
       {
         "paramName": "eventType",
         "paramValue": "productDetail",
+        "type": "EQUALS"
+      },
+      {
+        "paramName": "eventType",
+        "paramValue": "basketEvent",
         "type": "EQUALS"
       },
       {
@@ -978,18 +1004,24 @@ function basketEvent() {
     if (basketContent == null) return false;
   }
 
+  var product = data.productObject;
+
   // The product was added from a Raptor module, so the click is reported as well, using the basket event's parameter mapping.
-  if (data.raptorModule) {
+  // Skipped when product field mappings are used but no product object is available, as the click would have no product id.
+  if (data.raptorModule && (product || !hasNameMappings(data.parameterMapping))) {
     var trackingObject = {};
 
-    setMappedParameters(data, trackingObject);
+    setMappedParameters(data, trackingObject, product);
     setEventType('itemclick', data.eventTypeParameter, trackingObject);
     callInWindow('raptor.push', 'trackEvent', trackingObject, { moduleName: data.raptorModule });
   }
 
   var basketTracking = {};
-  setMappedParameters(data, basketTracking);
-  if (basketContent != null) {
+  setMappedParameters(data, basketTracking, product);
+
+  // Internal mode: the tag owns the basket content parameter and overrides any mapping of it.
+  // External mode: the basket content is provided through the parameter mapping, like any other parameter.
+  if (data.basketTrackingMode == 'internal') {
     var contentParameter = data.basketContentParameterNumber || 10;
     basketTracking['p' + contentParameter] = basketContent.join(',');
   }
@@ -1798,6 +1830,51 @@ scenarios:
     assertThat(raptorQueue[1].options.moduleName).isEqualTo('GetSimilarItems');
     assertThat(raptorQueue[2].params.p1).isEqualTo('basket');
     assertThat(raptorQueue[2].params.p10).isEqualTo('12345');
+    assertApi('gtmOnSuccess').wasCalled();
+- name: Should track itemclick on raptor basket event from product object
+  code: |-
+    const mockData = {
+      eventType:'basketEvent',
+      eventTypeParameter: 1,
+      raptorModule: 'GetSimilarItems',
+      productObject: {
+        id:'12345'
+      },
+      parameterMapping: [
+        {"parameterName":"p2","parameterValue":"id", "parameterSource":"name"},
+        {"parameterName":"p10","parameterValue":"12345,67890", "parameterSource":"variable"}
+      ]
+    };
+
+    runCode(mockData);
+
+    var raptorQueue = copyFromWindow('raptor.q');
+    assertThat(raptorQueue.length).isEqualTo(3);
+    assertThat(raptorQueue[1].params.p1).isEqualTo('itemclick');
+    assertThat(raptorQueue[1].params.p2).isEqualTo('12345');
+    assertThat(raptorQueue[1].options.moduleName).isEqualTo('GetSimilarItems');
+    assertThat(raptorQueue[2].params.p1).isEqualTo('basket');
+    assertThat(raptorQueue[2].params.p2).isEqualTo('12345');
+    assertThat(raptorQueue[2].params.p10).isEqualTo('12345,67890');
+    assertApi('gtmOnSuccess').wasCalled();
+- name: Should not track itemclick on raptor basket event with product field mappings but no product object
+  code: |-
+    const mockData = {
+      eventType:'basketEvent',
+      eventTypeParameter: 1,
+      raptorModule: 'GetSimilarItems',
+      parameterMapping: [
+        {"parameterName":"p2","parameterValue":"id", "parameterSource":"name"},
+        {"parameterName":"p10","parameterValue":"12345,67890", "parameterSource":"variable"}
+      ]
+    };
+
+    runCode(mockData);
+
+    var raptorQueue = copyFromWindow('raptor.q');
+    assertThat(raptorQueue.length).isEqualTo(2);
+    assertThat(raptorQueue[1].params.p1).isEqualTo('basket');
+    assertThat(raptorQueue[1].params.p10).isEqualTo('12345,67890');
     assertApi('gtmOnSuccess').wasCalled();
 - name: Should not track itemclick on basket event without raptor module
   code: |-

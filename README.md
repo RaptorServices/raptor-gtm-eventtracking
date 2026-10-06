@@ -244,9 +244,9 @@ Raptor requires the **complete basket content** with every basket event, not onl
 | **Basket Action** | The basket action that triggers the tag: **Add to basket**, **Remove from basket**, **Clear basket** or **Set basket**. |
 | **Product ID** | A Data Layer variable containing the ID of the product that was added or removed. Use the same product ID as in your other Raptor events. If several products are added at once, the variable may contain a list of IDs. Only shown for **Add to basket** and **Remove from basket**, or when the Basket Action is set by a variable. |
 | **Quantity** (default 1) | The number of units added or removed. Leave empty if the quantity is always 1, or select a Data Layer variable containing the quantity. The quantity itself is not sent to Raptor. Only shown for **Add to basket** and **Remove from basket**, or when the Basket Action is set by a variable. |
-| **Basket Product List** | Only shown for **Set basket**. A Data Layer variable containing the complete list of products in the basket, for example `ecommerce.items`. |
-| **Product ID Field Name** (default `id`) | Only shown for **Set basket**. The name of the field containing the product ID in each product of the list, for example `id` or `item_id`. Products without a value in this field are ignored. |
-| **Quantity Field Name** (default `quantity`) | Only shown for **Set basket**. The name of the field containing the quantity in each product of the list. If the value is missing or not a positive number, a quantity of 1 is used. Leave empty to count each product as 1 unit. |
+| **Basket Product List** | Only shown for **Set basket**, or when the Basket Action is set by a variable. A Data Layer variable containing the complete list of products in the basket, for example `ecommerce.items`. |
+| **Product ID Field Name** (default `id`) | Only shown for **Set basket**, or when the Basket Action is set by a variable. The name of the field containing the product ID in each product of the list, for example `id` or `item_id`. Products without a value in this field are ignored. |
+| **Quantity Field Name** (default `quantity`) | Only shown for **Set basket**, or when the Basket Action is set by a variable. The name of the field containing the quantity in each product of the list. If the value is missing or not a positive number, a quantity of 1 is used. Leave empty to count each product as 1 unit. |
 | **Basket Content Parameter Number** (default 10) | Located under **Basket Default Settings** (collapsed by default). The parameter used for the basket content. Refer to the basket event on the Implementing tracking page, and only change this value if it specifies a parameter other than p10. Do not map this parameter under Parameter Mapping as well, as the tag sets it automatically. |
 | **Basket Lifetime in Days** (default 30) | Located under **Basket Default Settings** (collapsed by default). If the basket has not changed for the specified number of days, the tag starts over with an empty basket. Set this to match your webshop's basket lifetime, or to 0 for an unlimited lifetime. |
 
@@ -257,13 +257,21 @@ We recommend creating **one tag per action**:
 - A "Raptor – Add to basket" tag with the Basket Action **Add to basket**, fired by your add-to-basket trigger.
 - A "Raptor – Remove from basket" tag with the Basket Action **Remove from basket**, fired by your remove-from-basket trigger.
 
-Alternatively, a single tag can handle all basket events. In that case, select a variable in **Basket Action** that contains `AddToBasket`, `RemoveFromBasket` or `ClearBasket` (not case-sensitive). **Set basket** always requires a separate tag with **Set basket** selected, as the product list settings are only shown for this action.
+Alternatively, a single tag can handle all basket events. In that case, select a variable in **Basket Action** that contains `AddToBasket`, `RemoveFromBasket`, `ClearBasket` or `SetBasket` (not case-sensitive). When the Basket Action is set by a variable, the settings for all actions are shown, so fill in both the product ID settings and the basket product list settings for the actions your variable can return.
+
+Other values are not recognised. If you want to use the built-in **Event** variable with GA4 e-commerce events, create a **Lookup Table** variable that translates the event names, and select it in **Basket Action**:
+
+| Input ({{Event}}) | Output |
+|---|---|
+| `add_to_cart` | `AddToBasket` |
+| `remove_from_cart` | `RemoveFromBasket` |
+| `view_cart` | `SetBasket` |
 
 ### Products added from a Raptor module
 
 If a visitor adds a product to the basket directly from a Raptor module (product recommendation), Raptor should also receive the click. Select a Data Layer variable in **Clicked Raptor Module** on your add-to-basket tag that contains the module name, for example `GetSimilarItems`, when the product was added from a module, and is empty otherwise.
 
-The tag then sends an "itemclick" event before the basket event. The click uses the same **Parameter Mapping** as the basket event, so make sure the product ID is mapped there, for example to p2.
+The tag then sends an "itemclick" event before the basket event. The click uses the same **Parameter Mapping** as the basket event, so make sure the product ID is mapped there, for example to p2. You can map it from a Data Layer variable, or select the added product in **Product Detail Object** and map its field name, for example `id`. If you map product fields by name but no product is available, the click is not sent.
 
 ### Set basket
 
