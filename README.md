@@ -234,8 +234,9 @@ _These settings are only available for "Add or Remove from Basket (basket)"._
 
 Raptor requires the **complete basket content** with every basket event, not only the product that was added or removed. The tag supports two ways of providing it, selected under **Basket Content Source**:
 
+- **Stored by the tag in the visitor's browser (recommended)**: Your website only needs to provide the product that was added or removed. The tag stores the basket in the visitor's browser, updates it with every basket event and sends the complete basket to Raptor as a comma-separated list of product IDs.
 - **Provided in the Data Layer**: Select this option if your website already provides the complete list of basket products in the Data Layer. Map it to the basket content parameter (usually p10) under Parameter Mapping, in the same way as any other value. The product IDs must be provided as a comma-separated list, for example `1234,4567,3456`.
-- **Stored by the tag in the visitor's browser**: Select this option if your website only provides the product that was added or removed. The tag then stores the basket in the visitor's browser, updates it with every basket event and sends the complete basket to Raptor as a comma-separated list of product IDs.
+
 
 ### Settings when the tag stores the basket
 

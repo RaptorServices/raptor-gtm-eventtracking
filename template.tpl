@@ -110,17 +110,21 @@ ___TEMPLATE_PARAMETERS___
         "displayName": "Basket Content Source",
         "radioItems": [
           {
-            "value": "external",
-            "displayValue": "Provided in the Data Layer (mapped under \"Parameter Mapping\")"
+            "value": "internal",
+            "displayValue": "Stored by the tag in the visitor\u0027s browser (recommended)"
           },
           {
-            "value": "internal",
-            "displayValue": "Stored by the tag in the visitor\u0027s browser"
+            "value": "external",
+            "displayValue": "Provided in the Data Layer (mapped under \"Parameter Mapping\")"
           }
         ],
         "simpleValueType": true,
-        "defaultValue": "external",
-        "help": "Raptor requires the complete basket content with every basket event, not only the product that was added or removed.\u003cbr/\u003e\u003cbr/\u003eSelect the first option if your website already provides the complete list of basket products in the Data Layer.\u003cbr/\u003e\u003cbr/\u003eSelect the second option if it does not. The tag then stores the basket in the visitor\u0027s browser and updates it with every basket event. The tag only needs to know which product was added or removed, and sends the complete basket to Raptor as a comma-separated list of product IDs, for example 123,456."
+        "valueValidators": [
+          {
+            "type": "NON_EMPTY"
+          }
+        ],
+        "help": "Raptor requires the complete basket content with every basket event, not only the product that was added or removed.\u003cbr/\u003e\u003cbr/\u003eThe first option is recommended. The tag stores the basket in the browser of the visitor and updates it with every basket event. The tag only needs to know which product was added or removed, and sends the complete basket to Raptor as a comma-separated list of product IDs, for example 123,456.\u003cbr/\u003e\u003cbr/\u003eSelect the second option if your website already provides the complete list of basket products in the Data Layer. In that case, map the visitor\u0027s complete basket content under \"Parameter Mapping\". Basket tags created before this setting existed keep using this option until another option is selected."
       },
       {
         "type": "SELECT",
