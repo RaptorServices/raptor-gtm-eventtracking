@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Raptor GTM Test Shop</title>
+
+<script>
+  // Runs before GTM, so every raptor.push call made by the Raptor tags is logged on the page.
+  window.raptorTest = { raptorCalls: [], onRaptorCall: null, gtmId: null };
+
+  (function () {
+    var current;
+
+    function wrap(obj) {
+      if (!obj || typeof obj.push !== 'function' || obj.push.__raptorTest) return;
+      var original = obj.push;
+      var logged = function () {
+        var args = Array.prototype.slice.call(arguments);
+        try { args = JSON.parse(JSON.stringify(args)); } catch (e) {}
+        raptorTest.raptorCalls.push({ time: new Date(), args: args });
+        if (raptorTest.onRaptorCall) raptorTest.onRaptorCall();
+        return original.apply(this, arguments);
+      };
+      logged.__raptorTest = true;
+      try { obj.push = logged; } catch (e) {}
+    }
+
+    // Catches window.raptor being (re)assigned by the Raptor tags or the Raptor script.
+    Object.defineProperty(window, 'raptor', {
+      configurable: true,
+      enumerable: true,
+      get: function () { return current; },
+      set: function (value) { current = value; wrap(value); }
+    });
+    // Catches raptor.push being replaced on the existing object.
+    setInterval(function () { wrap(current); }, 200);
+  })();
+
+  // Container ID from ?gtm=GTM-XXXX, remembered in localStorage.
+  (function () {
+    var id = new URLSearchParams(location.search).get('gtm');
+    try {
+      if (id) localStorage.setItem('raptorTest.gtmId', id);
+      else id = localStorage.getItem('raptorTest.gtmId');
+    } catch (e) {}
+    raptorTest.gtmId = id && /^GTM-[A-Z0-9]+$/i.test(id) ? id.toUpperCase() : null;
+
+    window.dataLayer = window.dataLayer || [];
+    if (!raptorTest.gtmId) return;
+
+    (function (w, d, s, l, i) {
+      w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+      var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : '';
+      j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', raptorTest.gtmId);
+  })();
+</script>
+
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --panel: #ffffff;
+    --text: #1b1f24;
+    --muted: #5d6673;
+    --border: #dde1e7;
+    --accent: #0b63ce;
+    --accent-text: #ffffff;
+    --ok: #1a7f37;
+    --ok-bg: #e6f4ea;
+    --warn: #9a4d00;
+    --warn-bg: #fdf0e1;
+    --code: #f0f2f5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111418;
+      --panel: #1a1e24;
+      --text: #e6e9ed;
+      --muted: #9aa3ae;
+      --border: #2d333b;
+      --accent: #4c9aff;
+      --accent-text: #0b1220;
+      --ok: #56d364;
+      --ok-bg: #12261a;
+      --warn: #f0a44b;
+      --warn-bg: #2b1d0e;
+      --code: #232830;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 14px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  header { padding: 20px 16px 8px; max-width: 1280px; margin: 0 auto; }
+  header h1 { margin: 0 0 4px; font-size: 22px; }
+  main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 8px 16px 40px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+  @media (max-width: 900px) { main { grid-template-columns: minmax(0, 1fr); } }
+  .column { display: grid; gap: 16px; min-width: 0; }
+  section {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    min-width: 0;
+  }
+  section h2 { margin: 0 0 4px; font-size: 16px; }
+  section > p:first-of-type { margin-top: 0; }
+  .muted { color: var(--muted); }
+  .small { font-size: 12px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
+  button {
+    font: inherit;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    cursor: pointer;
+  }
+  button:hover { border-color: var(--accent); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  input[type=text], input[type=email], input[type=number] {
+    font: inherit;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    min-width: 0;
+  }
+  input[type=number] { width: 64px; }
+  label.inline { display: inline-flex; gap: 6px; align-items: center; }
+  .products { display: grid; gap: 10px; margin-top: 10px; }
+  .product { border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+  .product-head { display: flex; justify-content: space-between; gap: 8px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .badge.ok { background: var(--ok-bg); color: var(--ok); }
+  .badge.warn { background: var(--warn-bg); color: var(--warn); }
+  .baskets { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+  .baskets h3 { margin: 0 0 4px; font-size: 13px; }
+  .baskets ul { margin: 0; padding-left: 18px; }
+  code, pre { font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
+  code { background: var(--code); padding: 1px 4px; border-radius: 4px; }
+  .log { list-style: none; margin: 10px 0 0; padding: 0; max-height: 360px; overflow: auto; }
+  .log li { border-top: 1px solid var(--border); padding: 8px 0; }
+  .log li:first-child { border-top: 0; }
+  .log .meta { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .log pre { margin: 4px 0 0; padding: 8px; background: var(--code); border-radius: 6px; white-space: pre-wrap; word-break: break-word; }
+  .empty { color: var(--muted); padding: 8px 0; }
+  details summary { cursor: pointer; font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; font-size: 13px; }
+  th, td { text-align: left; vertical-align: top; padding: 6px 8px; border-top: 1px solid var(--border); }
+  th { color: var(--muted); font-weight: 600; }
+  .table-wrap { overflow-x: auto; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Raptor GTM Test Shop</h1>
+  <div class="muted">Pushes realistic Data Layer events (GA4 e-commerce format) to your GTM container, and shows what the Raptor tags send and store.</div>
+</header>
+
+<main>
+  <div class="column">
+
+    <section>
+      <h2>Setup</h2>
+      <p class="muted">Enter the ID of a GTM container with the Raptor tags. Use GTM <b>Preview</b> with <code>http://localhost:8080/</code> to test unpublished changes.</p>
+      <form class="row" id="gtm-form">
+        <input type="text" id="gtm-id" placeholder="GTM-XXXXXXX" autocomplete="off">
+        <button class="primary" type="submit">Load container</button>
+        <span id="gtm-status" class="small"></span>
+      </form>
+      <div class="row">
+        <button id="consent">Accept cookies</button>
+        <span id="consent-status" class="small"></span>
+      </div>
+      <div class="row">
+        <button id="reset">Reset test data</button>
+        <span class="muted small">Empties the page basket, the stored Raptor basket and the cookie consent, then reloads.</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>Products</h2>
+      <label class="inline small"><input type="checkbox" id="from-module"> Add to basket from a Raptor module (sets <code>item_list_name</code> to <code>GetSimilarItems</code>)</label>
+      <div class="products" id="products"></div>
+    </section>
+
+    <section>
+      <h2>Basket</h2>
+      <div class="row" style="margin-top:0">
+        <span id="sync-status"></span>
+      </div>
+      <div class="baskets">
+        <div>
+          <h3>Webshop basket</h3>
+          <div class="muted small">What the visitor actually has in the basket.</div>
+          <ul id="page-basket"></ul>
+        </div>
+        <div>
+          <h3>Stored by the tag</h3>
+          <div class="muted small"><code>localStorage.raptorBasket</code></div>
+          <ul id="stored-basket"></ul>
+          <div class="muted small" id="stored-updated"></div>
+        </div>
+      </div>
+      <div class="row">
+        <button id="view-cart">View basket page <span class="muted small">(view_cart)</span></button>
+        <button id="clear-cart">Empty basket <span class="muted small">(clear_cart)</span></button>
+        <button id="purchase" class="primary">Complete purchase</button>
+      </div>
+      <div class="row">
+        <button id="silent-add">Add Wool Cap without tracking</button>
+        <button id="age-basket">Age stored basket by 31 days</button>
+      </div>
+      <p class="muted small">Use these two to test that <b>Set basket</b> brings an out-of-sync basket back in line, and that <b>Basket Lifetime in Days</b> discards an old basket.</p>
+    </section>
+
+    <section>
+      <h2>Search</h2>
+      <form class="row" id="search-form">
+        <input type="text" id="search-term" value="jacket">
+        <button class="primary" type="submit">Search</button>
+        <button type="button" id="search-click">Click first result</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>Visitor identification</h2>
+      <p class="muted">Tests the <b>Set Email Marketing ID</b> event type.</p>
+      <form class="row" id="login-form">
+        <input type="email" id="email" value="test.user@example.com">
+        <button class="primary" type="submit">Log in</button>
+        <button type="button" id="login-empty">Log in without email</button>
+      </form>
+      <p class="muted small">"Log in without email" pushes an empty <code>user_email</code>: the tag should succeed without sending anything to Raptor.</p>
+    </section>
+
+    <section>
+      <details>
+        <summary>GTM container setup for this page</summary>
+        <p class="muted">Create these items in a test container (or a test workspace). Parameter numbers depend on your Raptor account: use the "Implementing tracking" page in the Raptor Control Panel. The mappings below are only examples.</p>
+
+        <h3>Variables (Data Layer Variable, version 2)</h3>
+        <div class="table-wrap"><table>
+          <tr><th>Name</th><th>Data Layer Variable Name</th></tr>
+          <tr><td>DLV - Product</td><td><code>ecommerce.items.0</code></td></tr>
+          <tr><td>DLV - Product ID</td><td><code>ecommerce.items.0.item_id</code></td></tr>
+          <tr><td>DLV - Quantity</td><td><code>ecommerce.items.0.quantity</code></td></tr>
+          <tr><td>DLV - Items</td><td><code>ecommerce.items</code></td></tr>
+          <tr><td>DLV - Item List Name</td><td><code>ecommerce.item_list_name</code></td></tr>
+          <tr><td>DLV - Search Term</td><td><code>search_term</code></td></tr>
+          <tr><td>DLV - Clicked Item ID</td><td><code>clicked_item_id</code></td></tr>
+          <tr><td>DLV - User Email</td><td><code>user_email</code></td></tr>
+        </table></div>
+
+        <h3>Triggers (Custom Event)</h3>
+        <p class="muted small">One trigger per event name: <code>consent_granted</code>, <code>view_item</code>, <code>add_to_cart</code>, <code>remove_from_cart</code>, <code>clear_cart</code>, <code>view_cart</code>, <code>purchase</code>, <code>select_item</code>, <code>search</code>, <code>search_click</code>, <code>login</code>. The page pushes <code>consent_granted</code> on every page load once cookies have been accepted.</p>
+
+        <h3>Tags</h3>
+        <div class="table-wrap"><table>
+          <tr><th>Tag</th><th>Settings</th><th>Trigger</th></tr>
+          <tr><td>Raptor Main</td><td>Your Customer ID</td><td>consent_granted</td></tr>
+          <tr><td>Raptor – Visit</td><td>Product Detail. Product Detail Object: <code>{{DLV - Product}}</code>. Mapping: p2 = field <code>item_id</code>, p3 = field <code>item_name</code></td><td>view_item</td></tr>
+          <tr><td>Raptor – Add to basket</td><td>Basket. Stored in browser. Action: Add to basket. Product ID: <code>{{DLV - Product ID}}</code>. Quantity: <code>{{DLV - Quantity}}</code>. Clicked Raptor Module: <code>{{DLV - Item List Name}}</code>. Mapping: p2 = variable <code>{{DLV - Product ID}}</code> (also used for the module click)</td><td>add_to_cart</td></tr>
+          <tr><td>Raptor – Remove from basket</td><td>As above, Action: Remove from basket, without Clicked Raptor Module</td><td>remove_from_cart</td></tr>
+          <tr><td>Raptor – Clear basket</td><td>Basket. Stored in browser. Action: Clear basket</td><td>clear_cart</td></tr>
+          <tr><td>Raptor – Set basket</td><td>Basket. Stored in browser. Action: Set basket. Basket Product List: <code>{{DLV - Items}}</code>. Product ID Field Name: <code>item_id</code></td><td>view_cart</td></tr>
+          <tr><td>Raptor – Buy</td><td>Purchase. Purchased Products Array: <code>{{DLV - Items}}</code>. Mapping: p2 = field <code>item_id</code>, p12 = field <code>price</code>, p13 = field <code>quantity</code></td><td>purchase</td></tr>
+          <tr><td>Raptor – Module click</td><td>Raptor Module Click. Module: <code>{{DLV - Item List Name}}</code>. Mapping: p2 = variable <code>{{DLV - Product ID}}</code></td><td>select_item</td></tr>
+          <tr><td>Raptor – Search</td><td>Search. Mapping: p2 = variable <code>{{DLV - Search Term}}</code></td><td>search</td></tr>
+          <tr><td>Raptor – Search click</td><td>Search Click. Mapping: p2 = variable <code>{{DLV - Clicked Item ID}}</code>, p3 = variable <code>{{DLV - Search Term}}</code></td><td>search_click</td></tr>
+          <tr><td>Raptor – Set Email Marketing ID</td><td>Set Email Marketing ID. Email Marketing ID: <code>{{DLV - User Email}}</code></td><td>login</td></tr>
+        </table></div>
+      </details>
+    </section>
+
+  </div>
+
+  <div class="column">
+    <section>
+      <div class="product-head">
+        <h2>Sent to Raptor</h2>
+        <button id="clear-raptor-log" class="small">Clear</button>
+      </div>
+      <div class="muted small">Every <code>raptor.push</code> call made by the tags, newest first. Confirm the events in the Live Tracking Stream in the Raptor Control Panel as well.</div>
+      <ul class="log" id="raptor-log"></ul>
+    </section>
+
+    <section>
+      <div class="product-head">
+        <h2>Pushed to the Data Layer</h2>
+        <button id="clear-dl-log" class="small">Clear</button>
+      </div>
+      <div class="muted small">Events pushed by this page, newest first.</div>
+      <ul class="log" id="dl-log"></ul>
+    </section>
+  </div>
+</main>
+
+<script>
+  var PRODUCTS = [
+    { id: '1001', name: 'Rain Jacket', category: 'Clothing/Jackets', price: 799 },
+    { id: '1002', name: 'Wool Cap', category: 'Clothing/Accessories', price: 199 },
+    { id: '1003', name: 'Hiking Boots', category: 'Footwear/Boots', price: 1299 }
+  ];
+  var MODULE_NAME = 'GetSimilarItems';
+  var DAY_MILLIS = 24 * 60 * 60 * 1000;
+
+  var dlLog = [];
+  var raptorLogStart = 0;
+
+  function $(id) { return document.getElementById(id); }
+
+  function read(key, fallback) {
+    try { var value = localStorage.getItem(key); return value == null ? fallback : JSON.parse(value); }
+    catch (e) { return fallback; }
+  }
+
+  function write(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
+  }
+
+  function remove(key) {
+    try { localStorage.removeItem(key); } catch (e) {}
+  }
+
+  function product(id) {
+    return PRODUCTS.filter(function (p) { return p.id == id; })[0];
+  }
+
+  // Webshop basket as [{ id, qty }], kept across page loads like a real basket.
+  var cart = read('raptorTest.cart', []);
+
+  function saveCart() {
+    cart = cart.filter(function (line) { return line.qty > 0; });
+    write('raptorTest.cart', cart);
+    renderBaskets();
+  }
+
+  function toItem(p, qty) {
+    return { item_id: p.id, item_name: p.name, item_category: p.category, price: p.price, quantity: qty };
+  }
+
+  function cartItems() {
+    return cart.map(function (line) { return toItem(product(line.id), line.qty); });
+  }
+
+  function push(obj) {
+    // Clear the previous ecommerce object, as recommended for GA4 e-commerce.
+    if (obj.ecommerce) window.dataLayer.push({ ecommerce: null });
+    window.dataLayer.push(obj);
+    dlLog.push({ time: new Date(), obj: JSON.parse(JSON.stringify(obj)) });
+    renderDlLog();
+  }
+
+  // ---- Visitor actions ----
+
+  function viewItem(p) {
+    push({ event: 'view_item', ecommerce: { currency: 'DKK', value: p.price, items: [toItem(p, 1)] } });
+  }
+
+  function selectItem(p) {
+    push({ event: 'select_item', ecommerce: { item_list_name: MODULE_NAME, items: [toItem(p, 1)] } });
+  }
+
+  function addToCart(p, qty) {
+    var line = cart.filter(function (l) { return l.id == p.id; })[0];
+    if (line) line.qty += qty;
+    else cart.push({ id: p.id, qty: qty });
+    saveCart();
+
+    var ecommerce = { currency: 'DKK', value: p.price * qty, items: [toItem(p, qty)] };
+    if ($('from-module').checked) ecommerce.item_list_name = MODULE_NAME;
+    push({ event: 'add_to_cart', ecommerce: ecommerce });
+  }
+
+  function removeFromCart(p, qty) {
+    var line = cart.filter(function (l) { return l.id == p.id; })[0];
+    if (line) line.qty -= qty;
+    saveCart();
+    push({ event: 'remove_from_cart', ecommerce: { currency: 'DKK', value: p.price * qty, items: [toItem(p, qty)] } });
+  }
+
+  function viewCart() {
+    var items = cartItems();
+    push({ event: 'view_cart', ecommerce: { currency: 'DKK', value: total(items), items: items } });
+  }
+
+  function clearCart() {
+    cart = [];
+    saveCart();
+    push({ event: 'clear_cart' });
+  }
+
+  function purchase() {
+    var items = cartItems();
+    if (!items.length) return;
+    cart = [];
+    saveCart();
+    push({ event: 'purchase', ecommerce: { transaction_id: 'T' + Date.now(), currency: 'DKK', value: total(items), items: items } });
+  }
+
+  function total(items) {
+    return items.reduce(function (sum, item) { return sum + item.price * item.quantity; }, 0);
+  }
+
+  function giveConsent() {
+    write('raptorTest.consent', true);
+    renderConsent();
+    push({ event: 'consent_granted' });
+  }
+
+  // ---- Rendering ----
+
+  function renderProducts() {
+    var container = $('products');
+    PRODUCTS.forEach(function (p) {
+      var card = document.createElement('article');
+      card.className = 'product';
+      card.innerHTML =
+        '<div class="product-head"><strong class="name"></strong><span class="muted price"></span></div>' +
+        '<div class="muted small meta"></div>' +
+        '<div class="row"><button data-act="view">View product</button><button data-act="module">Click in Raptor module</button></div>' +
+        '<div class="row"><label class="inline small">Qty <input type="number" min="1" value="1"></label>' +
+        '<button class="primary" data-act="add">Add to basket</button><button data-act="remove">Remove from basket</button></div>';
+      card.querySelector('.name').textContent = p.name;
+      card.querySelector('.price').textContent = p.price + ' DKK';
+      card.querySelector('.meta').textContent = 'ID ' + p.id + ' · ' + p.category;
+
+      card.addEventListener('click', function (e) {
+        var act = e.target.closest('button') && e.target.closest('button').getAttribute('data-act');
+        if (!act) return;
+        var qty = Math.max(1, parseInt(card.querySelector('input').value, 10) || 1);
+        if (act == 'view') viewItem(p);
+        if (act == 'module') selectItem(p);
+        if (act == 'add') addToCart(p, qty);
+        if (act == 'remove') removeFromCart(p, qty);
+      });
+      container.appendChild(card);
+    });
+  }
+
+  function basketLabel(id, qty) {
+    var p = product(id);
+    return qty + ' × ' + (p ? p.name + ' (' + id + ')' : id);
+  }
+
+  function fillList(list, entries) {
+    list.innerHTML = '';
+    if (!entries.length) {
+      var li = document.createElement('li');
+      li.className = 'muted';
+      li.textContent = 'Empty';
+      list.appendChild(li);
+      return;
+    }
+    entries.forEach(function (text) {
+      var li = document.createElement('li');
+      li.textContent = text;
+      list.appendChild(li);
+    });
+  }
+
+  function readStoredBasket() {
+    var raw = null;
+    try { raw = localStorage.getItem('raptorBasket'); } catch (e) {}
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch (e) { return { invalid: raw }; }
+  }
+
+  function basketKey(lines) {
+    return lines.map(function (l) { return l.id + 'x' + l.qty; }).sort().join(',');
+  }
+
+  var lastBasketRender = '';
+  function renderBaskets() {
+    var stored = readStoredBasket();
+    var snapshot = JSON.stringify([cart, stored]);
+    if (snapshot == lastBasketRender) return;
+    lastBasketRender = snapshot;
+
+    fillList($('page-basket'), cart.map(function (l) { return basketLabel(l.id, l.qty); }));
+
+    var storedItems = stored && Array.isArray(stored.items) ? stored.items : [];
+    fillList($('stored-basket'), stored ? storedItems.map(function (i) { return basketLabel(i.id, i.qty); }) : []);
+    if (stored && !Array.isArray(stored.items)) $('stored-basket').firstChild.textContent = 'Unreadable: ' + (stored.invalid || snapshot);
+
+    $('stored-updated').textContent = stored && stored.updated
+      ? 'Last changed ' + new Date(stored.updated).toLocaleString() + ' (' + ((Date.now() - stored.updated) / DAY_MILLIS).toFixed(1) + ' days ago)'
+      : stored ? '' : 'Nothing stored yet';
+
+    var status = $('sync-status');
+    if (!stored) {
+      status.className = 'badge warn';
+      status.textContent = 'No stored basket yet';
+    } else if (basketKey(cart) == basketKey(storedItems)) {
+      status.className = 'badge ok';
+      status.textContent = 'In sync';
+    } else {
+      status.className = 'badge warn';
+      status.textContent = 'Out of sync';
+    }
+
+    $('purchase').disabled = !cart.length;
+  }
+
+  function renderLog(list, entries, describe) {
+    list.innerHTML = '';
+    if (!entries.length) {
+      var empty = document.createElement('li');
+      empty.className = 'empty';
+      empty.textContent = 'Nothing yet';
+      list.appendChild(empty);
+      return;
+    }
+    entries.slice(-100).reverse().forEach(function (entry) {
+      var d = describe(entry);
+      var li = document.createElement('li');
+      var meta = document.createElement('div');
+      meta.className = 'meta';
+      var title = document.createElement('strong');
+      title.textContent = d.title;
+      var time = document.createElement('span');
+      time.className = 'muted small';
+      time.textContent = entry.time.toLocaleTimeString();
+      meta.appendChild(title);
+      meta.appendChild(time);
+      var pre = document.createElement('pre');
+      pre.textContent = d.body;
+      li.appendChild(meta);
+      li.appendChild(pre);
+      list.appendChild(li);
+    });
+  }
+
+  function renderRaptorLog() {
+    renderLog($('raptor-log'), raptorTest.raptorCalls.slice(raptorLogStart), function (entry) {
+      var method = entry.args[0];
+      var payload = entry.args.slice(1);
+      var params = payload[0];
+      var title = String(method);
+      if (params && typeof params == 'object') {
+        var eventType = params.p1 || Object.keys(params).map(function (k) { return params[k]; })
+          .filter(function (v) { return ['visit', 'basket', 'buy', 'itemclick', 'search', 'searchclick', 'pageview'].indexOf(v) >= 0; })[0];
+        if (eventType) title += ' · ' + eventType;
+      }
+      return { title: title, body: payload.map(function (p) { return JSON.stringify(p, null, 2); }).join('\n') };
+    });
+  }
+
+  function renderDlLog() {
+    renderLog($('dl-log'), dlLog, function (entry) {
+      return { title: entry.obj.event || '(no event)', body: JSON.stringify(entry.obj, null, 2) };
+    });
+  }
+
+  function renderGtmStatus() {
+    var status = $('gtm-status');
+    if (!raptorTest.gtmId) {
+      status.className = 'badge warn';
+      status.textContent = 'No container loaded';
+      return;
+    }
+    var loaded = window.google_tag_manager && window.google_tag_manager[raptorTest.gtmId];
+    status.className = loaded ? 'badge ok' : 'badge warn';
+    status.textContent = raptorTest.gtmId + (loaded ? ' loaded' : ' loading…');
+  }
+
+  function renderConsent() {
+    var given = read('raptorTest.consent', false);
+    $('consent').disabled = given;
+    $('consent-status').className = given ? 'badge ok' : 'badge warn';
+    $('consent-status').textContent = given ? 'Consent given' : 'No consent: Raptor Main should not fire';
+  }
+
+  // ---- Wiring ----
+
+  $('gtm-id').value = raptorTest.gtmId || '';
+  $('gtm-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var id = $('gtm-id').value.trim().toUpperCase();
+    if (!/^GTM-[A-Z0-9]+$/.test(id)) { $('gtm-id').focus(); return; }
+    location.search = '?gtm=' + encodeURIComponent(id);
+  });
+
+  $('consent').addEventListener('click', function () { giveConsent(); });
+  $('reset').addEventListener('click', function () {
+    remove('raptorTest.cart');
+    remove('raptorTest.consent');
+    remove('raptorBasket');
+    location.reload();
+  });
+
+  $('view-cart').addEventListener('click', viewCart);
+  $('clear-cart').addEventListener('click', clearCart);
+  $('purchase').addEventListener('click', purchase);
+
+  $('silent-add').addEventListener('click', function () {
+    var line = cart.filter(function (l) { return l.id == '1002'; })[0];
+    if (line) line.qty += 1;
+    else cart.push({ id: '1002', qty: 1 });
+    saveCart();
+  });
+
+  $('age-basket').addEventListener('click', function () {
+    var stored = readStoredBasket();
+    if (!stored || !Array.isArray(stored.items)) return;
+    stored.updated = (stored.updated || Date.now()) - 31 * DAY_MILLIS;
+    write('raptorBasket', stored);
+    renderBaskets();
+  });
+
+  $('search-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    push({ event: 'search', search_term: $('search-term').value });
+  });
+  $('search-click').addEventListener('click', function () {
+    push({ event: 'search_click', search_term: $('search-term').value, clicked_item_id: PRODUCTS[0].id });
+  });
+
+  $('login-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    push({ event: 'login', user_email: $('email').value });
+  });
+  $('login-empty').addEventListener('click', function () {
+    push({ event: 'login', user_email: '' });
+  });
+
+  $('clear-raptor-log').addEventListener('click', function () {
+    raptorLogStart = raptorTest.raptorCalls.length;
+    renderRaptorLog();
+  });
+  $('clear-dl-log').addEventListener('click', function () {
+    dlLog = [];
+    renderDlLog();
+  });
+
+  raptorTest.onRaptorCall = renderRaptorLog;
+
+  renderProducts();
+  renderBaskets();
+  renderRaptorLog();
+  renderDlLog();
+  renderGtmStatus();
+  renderConsent();
+
+  // Returning visitors who accepted cookies get consent_granted on every page load.
+  if (read('raptorTest.consent', false)) push({ event: 'consent_granted' });
+
+  // The tags change the stored basket and GTM finishes loading in the background.
+  setInterval(function () { renderBaskets(); renderGtmStatus(); }, 500);
+</script>
+</body>
+</html>
